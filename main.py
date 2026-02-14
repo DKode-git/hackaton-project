@@ -2,7 +2,7 @@ import json
 import os
 import uuid
 import random
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import List, Optional
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
@@ -87,7 +87,7 @@ def save_workout_entry(entry):
 def register(user: UserAuth):
     # For register, we require a username.
     if not user.username:
-         raise HTTPException(status_code=400, detail="Username is required for registration")
+          raise HTTPException(status_code=400, detail="Username is required for registration")
 
     db = get_db()
     
@@ -225,6 +225,50 @@ def get_history(user_id: str):
             "data": chart_data
         },
         "heatmap": heatmap
+    }
+
+# --- 8. NEW FEEDBACK & TRENDS ENDPOINTS (Request Implementation) ---
+
+@app.get("/suggestions")
+def get_suggestions():
+    """Returns list of feedback items (Mocked for Hackathon Demo)."""
+    return [
+        {
+            "id": 1,
+            "status": "pending",
+            "category": "Feature Request",
+            "text": "Add a dark mode toggle specifically for the charts.",
+            "summary": "Chart Dark Mode",
+            "sentiment": 65,
+            "date": "2h ago"
+        },
+        {
+            "id": 2,
+            "status": "approved",
+            "category": "Bug Report",
+            "text": "The hydration counter resets if I refresh the page too quickly.",
+            "summary": "Hydration Persistence Bug",
+            "sentiment": 30,
+            "date": "5h ago"
+        },
+        {
+            "id": 3,
+            "status": "rejected",
+            "category": "UI/UX",
+            "text": "Make the font size smaller on mobile devices.",
+            "summary": "Mobile Font Adjustment",
+            "sentiment": 80,
+            "date": "1d ago"
+        }
+    ]
+
+@app.get("/stats/trends")
+def get_trends():
+    """Returns high-level dashboard metrics."""
+    return {
+        "average_sentiment": random.randint(70, 95),
+        "top_keyword": random.choice(["Performance", "Dark Mode", "Sync", "Battery"]),
+        "urgent_count": random.randint(1, 5)
     }
 
 if __name__ == "__main__":
