@@ -3,19 +3,18 @@ import os
 import uuid
 import random
 import time
-from datetime import datetime, timedelta
-from typing import List, Optional, Dict, Any
-from fastapi import FastAPI, HTTPException, Header, Body, Depends
+from typing import List, Optional, Any
+from fastapi import FastAPI, HTTPException, Header
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
-app = FastAPI()
+app = FastAPI(title="Hackton Integrated Backend")
 
 # --- 1. CONFIGURATION & FILE SYSTEM ---
 DB_FILE = "users.json"
-WORKOUTS_FILE = "workouts.json"
 FEEDBACK_FILE = "feedback.json"
 
+# CORS: Allow all for local Hackathon development
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"], 
@@ -35,12 +34,15 @@ class RegisterRequest(BaseModel):
     password: str
 
 class FeedbackSubmission(BaseModel):
-    content: str
+    text: str          # Aligned with Frontend Contract
     category: str
-    priority: str
+    priority: Optional[str] = "normal"
 
 class FeedbackUpdate(BaseModel):
     status: str
+
+class PolishRequest(BaseModel):
+    text: str
 
 # --- 3. DATABASE ENGINE ---
 
@@ -65,7 +67,7 @@ def save_feedback_entry(entry):
     data.append(entry)
     save_json(FEEDBACK_FILE, data)
 
-def update_feedback_status(item_id, new_status):
+def update_feedback_status_in_db(item_id, new_status):
     data = get_feedback_db()
     updated = False
     for item in data:
@@ -85,10 +87,20 @@ def root_login(creds: LoginRequest):
     # Find user
     user = next((u for u in db['users'] if u['username'] == creds.username), None)
     
+    # Pre-seed admin if database is empty or user not found, for Hackathon ease
+    if not user and creds.username == "admin" and creds.password == "password":
+        return {
+            "token": "admin-token-123",
+            "username": "admin",
+            "role": "admin",
+            "user_id": "admin_01"
+        }
+
     if user and user['password'] == creds.password:
         return {
             "token": f"bearer-token-{uuid.uuid4()}",
             "username": user['username'],
+            "role": user.get('role', 'user'), # Critical for Routing
             "user_id": user['user_id']
         }
     raise HTTPException(status_code=401, detail="Invalid username or password")
@@ -102,87 +114,84 @@ def root_register(creds: RegisterRequest):
     new_user = {
         "user_id": f"user_{uuid.uuid4().hex[:8]}",
         "username": creds.username,
-        "password": creds.password, # In production, hash this!
+        "password": creds.password, 
+        "role": "user",
         "stats": { "steps": 0, "hydration": 0 }
     }
     db['users'].append(new_user)
     save_db(db)
     return {"message": "Account created successfully"}
 
-@app.get("/verify_token")
-def verify_token(authorization: Optional[str] = Header(None)):
-    if not authorization:
-        raise HTTPException(status_code=401, detail="Missing Token")
-    return {"valid": True}
-
-@app.post("/logout")
-def logout():
-    return {"message": "Logged out"}
-
 # --- 5. DASHBOARD ENDPOINTS ---
 
 @app.get("/suggestions")
-def get_suggestions():
-    """Returns real feedback from disk + mock items to ensure dashboard isn't empty."""
+def get_suggestions(authorization: Optional[str] = Header(None)):
+    """Returns real feedback from disk + mock items."""
     real_data = get_feedback_db()
     
-    # Mock Data (Serves as 'Pre-seeded' data for the Hackathon)
+    # Mock Data (Ensures the dashboard is never empty during demo)
     mock_data = [
-        {"id": "mock_1", "status": "pending", "category": "Feature Request", "text": "Dark mode for charts.", "summary": "Chart Dark Mode", "sentiment": 65, "date": "2h ago"},
-        {"id": "mock_2", "status": "approved", "category": "Bug Report", "text": "Hydration counter resets.", "summary": "Hydration Bug", "sentiment": 30, "date": "5h ago"},
-        {"id": "mock_3", "status": "rejected", "category": "UX", "text": "The font size is too small on mobile.", "summary": "Mobile Accessibility", "sentiment": 45, "date": "1d ago"}
+        {"id": 1, "status": "pending", "category": "Facilities", "text": "We need better coffee.", "ai_summary": "Beverage request", "sentiment": 45, "owner": "user"},
+        {"id": 2, "status": "approved", "category": "HR", "text": "4-day work week proposal.", "ai_summary": "Schedule change", "sentiment": 90, "owner": "admin"},
     ]
     
-    # Combine: Real data first, then mocks
-    return real_data[::-1] + mock_data
+    # In a real app, we would filter by Authorization header here
+    # For Hackathon, we return everything + mocks
+    combined = real_data + mock_data
+    return combined
 
 @app.post("/suggestions")
-def create_suggestion(item: FeedbackSubmission):
+def create_suggestion(item: FeedbackSubmission, authorization: Optional[str] = Header(None)):
+    # Simulate AI processing
+    ai_sentiment = random.randint(60, 100)
+    
     entry = {
         "id": uuid.uuid4().hex[:8],
         "status": "pending",
         "category": item.category,
-        "text": item.content,
-        "summary": item.content[:40] + "..." if len(item.content) > 40 else item.content,
-        "sentiment": random.randint(60, 95),
+        "text": item.text,
+        "ai_summary": f"AI Summary: {item.text[:20]}...",
+        "sentiment": ai_sentiment,
         "priority": item.priority,
-        "date": "Just now"
+        "owner": "current_user", # Simplified
+        "date": str(datetime.now().date()) if 'datetime' in globals() else "Just now"
     }
     save_feedback_entry(entry)
-    return {"status": "success", "data": entry}
+    return entry
 
 @app.patch("/suggestions/{item_id}")
 def update_suggestion(item_id: str, update: FeedbackUpdate):
     """Updates the status of a suggestion."""
-    success = update_feedback_status(item_id, update.status)
+    success = update_feedback_status_in_db(item_id, update.status)
     if success:
         return {"status": "success", "id": item_id, "new_status": update.status}
     
-    # If not found in DB, it might be a mock item. We return success for UI fluidity.
+    # If not found in DB, it might be a mock item. Return success for UI fluidity.
     return {"status": "success", "id": item_id, "message": "Mock item updated in memory"}
-
-@app.get("/stats/trends")
-def get_trends():
-    return {
-        "average_sentiment": random.randint(70, 95),
-        "top_keyword": random.choice(["Performance", "Dark Mode", "Sync", "Battery"]),
-        "urgent_count": random.randint(1, 5)
-    }
 
 # --- 6. AI ENDPOINTS ---
 
-class AIRefineRequest(BaseModel):
-    text: str
-
-@app.post("/v1/ai/polish")
-def ai_refine(payload: AIRefineRequest):
-    time.sleep(0.5) 
+@app.post("/ai/polish")
+def ai_refine(payload: PolishRequest):
+    """
+    Mock AI Endpoint. 
+    Matches the frontend contract: POST /ai/polish { text: "..." }
+    """
+    time.sleep(0.5)  # "Physics" delay
+    
     raw = payload.text
-    polished = f"Optimized: {raw}" # Replace with real AI logic if needed
-    if "suck" in raw or "bad" in raw:
-        polished = f"The user has reported a critical issue regarding: {raw.replace('suck', 'performance').replace('bad', 'suboptimal behavior')}."
-    return {"polished_text": polished}
+    polished = raw.capitalize()
+    
+    if "wifi" in raw.lower():
+        polished = "The network infrastructure requires immediate diagnostic attention."
+    elif len(raw) < 10:
+        polished = f"Elaborated: {raw} is a valid point that requires further discussion."
+    else:
+        polished = f"✨ Professional Edit: {raw} (Optimized for clarity)"
+
+    return {"polished": polished}
 
 if __name__ == "__main__":
     import uvicorn
+    # Run on port 8000
     uvicorn.run(app, host="0.0.0.0", port=8000)
