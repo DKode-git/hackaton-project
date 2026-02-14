@@ -28,6 +28,13 @@
                     animation: {
                         'spin-slow': 'spin 12s linear infinite',
                         'reverse-spin': 'spin 15s linear infinite reverse',
+                        'fade-in': 'fadeIn 0.5s ease-out',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0', transform: 'translateY(10px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        }
                     }
                 }
             }
@@ -73,6 +80,10 @@
         #toast-container { transition: transform 0.3s ease, opacity 0.3s ease; }
         .toast-hidden { transform: translateY(20px); opacity: 0; pointer-events: none; }
         .toast-visible { transform: translateY(0); opacity: 1; pointer-events: auto; }
+        
+        /* FORM TRANSITION */
+        .form-content { transition: opacity 0.2s ease; }
+        .opacity-0 { opacity: 0; }
     </style>
 </head>
 <body class="bg-zinc-950 text-white min-h-screen flex items-center justify-center relative overflow-hidden font-sans">
@@ -82,7 +93,7 @@
         <div class="nebula-blob absolute bottom-[-10%] right-[-10%] w-[500px] h-[500px] bg-secondary/10 rounded-full blur-[100px]" style="animation-delay: -5s;"></div>
     </div>
 
-    <main class="relative z-10 w-full max-w-4xl h-[600px] glass-panel rounded-3xl shadow-2xl flex overflow-hidden animate-[fadeIn_0.5s_ease-out]">
+    <main class="relative z-10 w-full max-w-4xl h-[600px] glass-panel rounded-3xl shadow-2xl flex overflow-hidden animate-fade-in">
         
         <div class="hidden md:flex w-1/2 bg-gradient-to-br from-zinc-900 to-black border-r border-white/5 flex-col items-center justify-center p-12 relative overflow-hidden group">
             
@@ -105,42 +116,54 @@
             </div>
         </div>
 
-        <div class="w-full md:w-1/2 p-8 md:p-12 flex flex-col justify-center bg-zinc-900/30 backdrop-blur-sm">
+        <div class="w-full md:w-1/2 p-8 md:p-12 flex flex-col justify-center bg-zinc-900/30 backdrop-blur-sm relative">
             
-            <div class="mb-10">
-                <h2 class="font-display text-2xl font-bold mb-2">Welcome Back</h2>
-                <p class="text-zinc-400 text-sm">Enter your credentials to access the Neural Network.</p>
+            <div id="form-container" class="form-content">
+                <div class="mb-10">
+                    <h2 id="form-title" class="font-display text-2xl font-bold mb-2">Welcome Back</h2>
+                    <p id="form-desc" class="text-zinc-400 text-sm">Enter your credentials to access the Neural Network.</p>
+                </div>
+
+                <form id="auth-form" onsubmit="handleAuth(event)" class="space-y-6">
+                    
+                    <div class="group">
+                        <label class="block text-xs font-semibold text-zinc-500 mb-2 uppercase tracking-wider">Identity</label>
+                        <div class="relative">
+                            <i class="fa-solid fa-user absolute left-4 top-1/2 -translate-y-1/2 text-zinc-500 group-focus-within:text-ai-glow transition-colors"></i>
+                            <input type="text" id="username" required 
+                                class="glass-input w-full rounded-xl py-3.5 pl-11 pr-4 text-sm placeholder-zinc-600"
+                                placeholder="username">
+                        </div>
+                    </div>
+
+                    <div class="group">
+                        <label class="block text-xs font-semibold text-zinc-500 mb-2 uppercase tracking-wider">Passcode</label>
+                        <div class="relative">
+                            <i class="fa-solid fa-lock absolute left-4 top-1/2 -translate-y-1/2 text-zinc-500 group-focus-within:text-ai-glow transition-colors"></i>
+                            <input type="password" id="password" required 
+                                class="glass-input w-full rounded-xl py-3.5 pl-11 pr-4 text-sm placeholder-zinc-600"
+                                placeholder="••••••••">
+                        </div>
+                    </div>
+
+                    <button type="submit" id="btn-submit" class="w-full bg-gradient-to-r from-ai-glow to-secondary py-3.5 rounded-xl text-white font-bold text-sm shadow-lg hover-spring relative overflow-hidden group mt-4">
+                        <span id="btn-text" class="relative z-10 flex items-center justify-center gap-2">
+                            Initialize Session <i class="fa-solid fa-arrow-right-to-bracket group-hover:translate-x-1 transition-transform"></i>
+                        </span>
+                        <div class="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
+                    </button>
+                </form>
+
+                <div class="mt-8 text-center">
+                    <p class="text-zinc-500 text-sm">
+                        <span id="toggle-text">New to the network?</span>
+                        <button onclick="toggleMode()" class="text-ai-glow hover:text-white font-semibold ml-1 transition-colors hover:underline">
+                            <span id="toggle-action">Register Identity</span>
+                        </button>
+                    </p>
+                </div>
             </div>
 
-            <form id="login-form" onsubmit="handleLogin(event)" class="space-y-6">
-                
-                <div class="group">
-                    <label class="block text-xs font-semibold text-zinc-500 mb-2 uppercase tracking-wider">Identity</label>
-                    <div class="relative">
-                        <i class="fa-solid fa-user absolute left-4 top-1/2 -translate-y-1/2 text-zinc-500 group-focus-within:text-ai-glow transition-colors"></i>
-                        <input type="text" id="username" required 
-                            class="glass-input w-full rounded-xl py-3.5 pl-11 pr-4 text-sm placeholder-zinc-600"
-                            placeholder="username">
-                    </div>
-                </div>
-
-                <div class="group">
-                    <label class="block text-xs font-semibold text-zinc-500 mb-2 uppercase tracking-wider">Passcode</label>
-                    <div class="relative">
-                        <i class="fa-solid fa-lock absolute left-4 top-1/2 -translate-y-1/2 text-zinc-500 group-focus-within:text-ai-glow transition-colors"></i>
-                        <input type="password" id="password" required 
-                            class="glass-input w-full rounded-xl py-3.5 pl-11 pr-4 text-sm placeholder-zinc-600"
-                            placeholder="••••••••">
-                    </div>
-                </div>
-
-                <button type="submit" id="btn-login" class="w-full bg-gradient-to-r from-ai-glow to-secondary py-3.5 rounded-xl text-white font-bold text-sm shadow-lg hover-spring relative overflow-hidden group mt-4">
-                    <span class="relative z-10 flex items-center justify-center gap-2">
-                        Initialize Session <i class="fa-solid fa-arrow-right-to-bracket group-hover:translate-x-1 transition-transform"></i>
-                    </span>
-                    <div class="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
-                </button>
-            </form>
         </div>
     </main>
 
@@ -151,75 +174,146 @@
             </div>
             <div>
                 <h4 class="text-white font-bold text-sm">Access Denied</h4>
-                <p class="text-zinc-400 text-xs">Invalid credentials provided.</p>
+                <p id="toast-message" class="text-zinc-400 text-xs">Invalid credentials provided.</p>
             </div>
         </div>
     </div>
 
     <script>
-        // CONFIG
-        const API_BASE_URL = "http://localhost:8000";
+        // --- 1. CONFIG & MOCK DATA ---
+        const API_BASE_URL = "http://localhost:8000"; // CHANGE ON DEPLOY
+        
+        const MOCK_DB = {
+            users: [
+                { username: "admin", password: "123", role: "admin", token: "mock-admin-token-777" },
+                { username: "user", password: "123", role: "user", token: "mock-user-token-888" }
+            ]
+        };
 
-        // LOGIC
-        async function handleLogin(e) {
-            e.preventDefault();
-            
-            const usernameInput = document.getElementById('username');
-            const passwordInput = document.getElementById('password');
-            const btn = document.getElementById('btn-login');
-            const originalContent = btn.innerHTML;
+        // State
+        let isRegisterMode = false;
 
-            // 1. UI Loading
-            btn.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin"></i> Authenticating...`;
-            btn.disabled = true;
+        // --- 2. CORE LOGIC ---
 
+        // The "Uncrashable" Fetch Wrapper
+        async function safeFetch(endpoint, options) {
             try {
-                // 2. API Call
-                const response = await fetch(`${API_BASE_URL}/login`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        username: usernameInput.value,
-                        password: passwordInput.value
-                    })
-                });
+                // Try Real API
+                const response = await fetch(`${API_BASE_URL}${endpoint}`, options);
+                if (!response.ok && response.status !== 404) throw new Error("API Error");
+                return await response.json();
+            } catch (error) {
+                console.warn(`⚠️ API Unreachable. Using Mock Data for ${endpoint}`);
+                
+                // Simulate Network Delay
+                await new Promise(r => setTimeout(r, 800)); 
 
-                if (response.ok) {
-                    const data = await response.json();
-                    
-                    // 3. Save Session
-                    localStorage.setItem('token', data.token);
-                    localStorage.setItem('username', data.username);
-                    
-                    // Determine Role (Mock logic for hackathon if backend doesn't send role yet)
-                    // If username contains "admin", they are admin. Otherwise user.
-                    let role = data.role;
-                    if (!role) {
-                        role = data.username.toLowerCase().includes('admin') ? 'admin' : 'user';
-                    }
-                    localStorage.setItem('role', role);
+                // MOCK LOGIC
+                const body = JSON.parse(options.body);
 
-                    // 4. Redirect
-                    if (role === 'admin') window.location.href = 'admin.html';
-                    else window.location.href = 'dashboard.html';
-
-                } else {
-                    throw new Error('Invalid credentials');
+                if (endpoint === '/login') {
+                    const user = MOCK_DB.users.find(u => u.username === body.username && u.password === body.password);
+                    if (user) return user;
+                    throw new Error("Invalid credentials");
                 }
 
-            } catch (error) {
-                console.error("Login Error:", error);
-                showToast();
-                
-                // Reset UI
-                btn.innerHTML = originalContent;
-                btn.disabled = false;
-                passwordInput.value = '';
+                if (endpoint === '/register') {
+                    // In mock mode, we just say "Success" and log them in as a User
+                    return { 
+                        username: body.username, 
+                        role: "user", 
+                        token: "mock-new-user-token-" + Date.now() 
+                    };
+                }
             }
         }
 
-        function showToast() {
+        async function handleAuth(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const btn = document.getElementById('btn-submit');
+            const originalBtnContent = btn.innerHTML;
+
+            // 1. UI Loading State
+            btn.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin"></i> Processing...`;
+            btn.disabled = true;
+
+            const endpoint = isRegisterMode ? '/register' : '/login';
+
+            try {
+                // 2. Call API (or Mock)
+                const data = await safeFetch(endpoint, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+
+                if (!data || !data.token) throw new Error("Auth Failed");
+
+                // 3. Success: Save Session
+                localStorage.setItem('token', data.token);
+                localStorage.setItem('username', data.username);
+                
+                // Determine Role logic
+                let role = data.role;
+                if (!role) {
+                    role = data.username.toLowerCase().includes('admin') ? 'admin' : 'user';
+                }
+                localStorage.setItem('role', role);
+
+                // 4. Redirect
+                if (role === 'admin') window.location.href = 'admin.html';
+                else window.location.href = 'dashboard.html';
+
+            } catch (error) {
+                console.error("Auth Error:", error);
+                showToast(error.message || "Authentication failed");
+                
+                // Reset UI
+                btn.innerHTML = originalBtnContent;
+                btn.disabled = false;
+                document.getElementById('password').value = '';
+            }
+        }
+
+        // --- 3. UI ANIMATIONS & TOGGLES ---
+
+        function toggleMode() {
+            const container = document.getElementById('form-container');
+            
+            // Fade Out
+            container.classList.add('opacity-0');
+
+            setTimeout(() => {
+                isRegisterMode = !isRegisterMode;
+
+                // Update Text
+                if (isRegisterMode) {
+                    document.getElementById('form-title').innerText = "Join the Network";
+                    document.getElementById('form-desc').innerText = "Create a new secure identity.";
+                    document.getElementById('btn-text').innerHTML = `Create Identity <i class="fa-solid fa-user-plus ml-2"></i>`;
+                    document.getElementById('toggle-text').innerText = "Already have access?";
+                    document.getElementById('toggle-action').innerText = "Login";
+                } else {
+                    document.getElementById('form-title').innerText = "Welcome Back";
+                    document.getElementById('form-desc').innerText = "Enter your credentials to access the Neural Network.";
+                    document.getElementById('btn-text').innerHTML = `Initialize Session <i class="fa-solid fa-arrow-right-to-bracket ml-2"></i>`;
+                    document.getElementById('toggle-text').innerText = "New to the network?";
+                    document.getElementById('toggle-action').innerText = "Register Identity";
+                }
+
+                // Fade In
+                container.classList.remove('opacity-0');
+            }, 200);
+        }
+
+        function showToast(msg) {
             const t = document.getElementById('toast-container');
+            const msgEl = document.getElementById('toast-message');
+            msgEl.innerText = msg;
+            
             t.classList.remove('toast-hidden');
             t.classList.add('toast-visible');
             setTimeout(() => {

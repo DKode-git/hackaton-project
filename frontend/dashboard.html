@@ -10,7 +10,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
     
     <script src="https://cdn.tailwindcss.com"></script>
-    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <script>
@@ -23,15 +22,11 @@
                         display: ['Space Grotesk', 'sans-serif'],
                     },
                     colors: {
-                        zinc: {
-                            950: '#09090b', 
-                            900: '#18181b', 
-                            850: '#27272a', 
-                        },
-                        neon: {
-                            cyan: '#22d3ee',
-                            purple: '#a855f7',
-                        }
+                        zinc: { 950: '#09090b', 900: '#18181b', 850: '#27272a' },
+                        neon: { cyan: '#22d3ee', purple: '#a855f7' }
+                    },
+                    animation: {
+                        'entry': 'slideUp 0.6s ease-out forwards',
                     }
                 }
             }
@@ -39,35 +34,31 @@
     </script>
 
     <style>
-        /* SPRING ANIMATION */
-        .hover-spring {
-            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
-        }
-        .hover-spring:hover {
-            transform: scale(1.02) translateY(-4px);
-            box-shadow: 0 10px 30px -10px rgba(34, 211, 238, 0.15);
-        }
-        
-        /* ENTRY ANIMATION */
+        /* ANIMATIONS */
         @keyframes slideUp {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        .animate-entry {
-            animation: slideUp 0.6s ease-out forwards;
-        }
         
-        /* UTILS */
+        .hover-spring { transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); }
+        .hover-spring:hover { transform: scale(1.02) translateY(-4px); }
+        .hover-spring:active { transform: scale(0.98); }
+        
+        /* GLASS UI */
         .glass-panel {
             background: rgba(24, 24, 27, 0.6);
             backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
             border: 1px solid rgba(255, 255, 255, 0.05);
         }
         
-        .status-badge-pending { @apply bg-yellow-500/10 text-yellow-500 border-yellow-500/20; }
-        .status-badge-approved { @apply bg-emerald-500/10 text-emerald-500 border-emerald-500/20; }
-        .status-badge-rejected { @apply bg-red-500/10 text-red-500 border-red-500/20; }
+        .status-badge { @apply px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wide border; }
+        .status-pending { @apply bg-yellow-500/10 text-yellow-500 border-yellow-500/20; }
+        .status-approved { @apply bg-emerald-500/10 text-emerald-500 border-emerald-500/20; }
+        .status-rejected { @apply bg-red-500/10 text-red-500 border-red-500/20; }
+        
+        /* SCROLLBAR */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
 </head>
 <body class="bg-zinc-950 text-zinc-300 font-sans h-screen flex overflow-hidden selection:bg-neon-cyan selection:text-black">
@@ -82,7 +73,7 @@
         </div>
 
         <div class="flex-1 px-4 space-y-2">
-            <button class="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-zinc-800/80 text-white border border-zinc-700 shadow-lg">
+            <button onclick="window.location.reload()" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-zinc-800/80 text-white border border-zinc-700 shadow-lg cursor-pointer">
                 <i class="fa-solid fa-grid-2 text-neon-cyan"></i>
                 <span class="hidden lg:block font-medium text-sm">My Suggestions</span>
             </button>
@@ -92,10 +83,10 @@
                 <span class="hidden lg:block font-medium text-sm">New Request</span>
             </a>
 
-            <button class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-zinc-500 hover:text-white hover:bg-zinc-900 transition-all">
-                <i class="fa-regular fa-user"></i>
+            <a href="profile.html" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-zinc-500 hover:text-white hover:bg-zinc-900 transition-all group">
+                <i class="fa-regular fa-user group-hover:text-neon-purple transition-colors"></i>
                 <span class="hidden lg:block font-medium text-sm">Profile</span>
-            </button>
+            </a>
         </div>
 
         <div class="px-4">
@@ -119,7 +110,7 @@
 
         <header class="h-20 border-b border-zinc-800 flex items-center justify-between px-8 bg-zinc-900/30 backdrop-blur-sm z-10">
             <div>
-                <h1 class="font-display font-bold text-white text-2xl">My Suggestions</h1>
+                <h1 class="font-display font-bold text-white text-2xl">My Dashboard</h1>
                 <p class="text-xs text-zinc-500 mt-1">Track the status of your AI-processed feedback.</p>
             </div>
             <a href="submit.html" class="hover-spring bg-white text-black px-5 py-2.5 rounded-xl font-bold text-sm shadow-lg shadow-white/10 flex items-center gap-2">
@@ -130,7 +121,7 @@
 
         <div class="flex-1 overflow-y-auto p-8 no-scrollbar">
             
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 animate-entry">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 animate-[slideUp_0.6s_ease-out_forwards]">
                 <div class="glass-panel p-5 rounded-2xl flex flex-col justify-between h-32">
                     <div class="text-zinc-500 text-xs font-bold uppercase tracking-wider">Total Contributions</div>
                     <div class="text-4xl font-display text-white" id="stat-total">--</div>
@@ -158,7 +149,7 @@
             <div id="card-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 pb-20">
                 </div>
 
-            <div id="empty-state" class="hidden flex flex-col items-center justify-center h-64 animate-entry text-center">
+            <div id="empty-state" class="hidden flex flex-col items-center justify-center h-64 text-center animate-[slideUp_0.6s_ease-out_forwards]">
                 <div class="w-16 h-16 rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center mb-4 text-zinc-600 text-2xl">
                     <i class="fa-regular fa-lightbulb"></i>
                 </div>
@@ -171,7 +162,7 @@
     </main>
 
     <script>
-        // 1. CONFIG & MOCK DATA
+        // --- CONFIG & MOCK DATA ---
         const API_BASE_URL = "http://localhost:8000"; 
         
         const MOCK_DATA = [
@@ -181,8 +172,8 @@
                 category: 'Productivity',
                 summary: 'Implement Deep Focus Tuesdays',
                 original: 'I think we should have a day where no meetings are allowed so we can actually code.',
-                ai_note: 'High sentiment alignment with Engineering goals.',
-                date: '2 days ago'
+                ai_summary: 'Proposal for "Deep Focus Tuesdays" to eliminate meetings and enhance coding productivity.',
+                sentiment: 85
             },
             {
                 id: 2,
@@ -190,8 +181,8 @@
                 category: 'Facilities',
                 summary: 'Ergonomic Chair Upgrade',
                 original: 'My back is killing me, these chairs are from 2010. We need Herman Millers.',
-                ai_note: 'Health & Safety priority detected.',
-                date: '4 hours ago'
+                ai_summary: 'Request for ergonomic furniture upgrades to address health concerns and improve comfort.',
+                sentiment: 60
             },
             {
                 id: 3,
@@ -199,44 +190,23 @@
                 category: 'Cafeteria',
                 summary: 'Free Pizza Everyday',
                 original: 'We should just have pizza for lunch every single day.',
-                ai_note: 'Budget constraints exceeded. Health concerns.',
-                date: '1 week ago'
+                ai_summary: 'Suggestion for daily free pizza; potential budget and health conflict identified.',
+                sentiment: 40
             }
         ];
 
-        // 2. AUTH & UTILS
+        // --- AUTH LOGIC ---
         function checkAuth() {
-            // Simulate Auth Check
-            const role = localStorage.getItem('role');
             const token = localStorage.getItem('token');
+            const role = localStorage.getItem('role');
             
             if (!token) {
                 window.location.href = 'index.html';
                 return;
             }
             
-            // If admin tries to access user dashboard, that's fine, but usually we separate them.
-            // For hackathon, strict role check:
-            /* if (role !== 'user') {
-                 // optional: window.location.href = 'dashboard-admin.html';
-            }
-            */
-        }
-
-        async function safeFetch(endpoint) {
-            try {
-                const token = localStorage.getItem('token');
-                const headers = token ? { 'Authorization': `Bearer ${token}` } : {};
-                
-                const response = await fetch(`${API_BASE_URL}${endpoint}`, { headers });
-                if (!response.ok) throw new Error("API Error");
-                return await response.json();
-            } catch (e) {
-                console.warn("API Unreachable, using Mock Data");
-                // Simulate network delay
-                await new Promise(r => setTimeout(r, 500));
-                return MOCK_DATA;
-            }
+            // Optional: Redirect Admin to admin.html
+            // if (role === 'admin') window.location.href = 'admin.html';
         }
 
         function logout() {
@@ -244,54 +214,78 @@
             window.location.href = 'index.html';
         }
 
-        // 3. RENDERERS
-        function getStatusStyle(status) {
-            switch(status) {
-                case 'approved': return 'status-badge-approved';
-                case 'rejected': return 'status-badge-rejected';
-                default: return 'status-badge-pending';
+        // --- FETCH ENGINE ---
+        async function safeFetch(endpoint) {
+            const token = localStorage.getItem('token');
+            try {
+                // Try Real API
+                const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (!response.ok) throw new Error("API Error");
+                return await response.json();
+            } catch (e) {
+                console.warn(`⚠️ API Unreachable. Using Mock Data for ${endpoint}`);
+                // Simulate Network Delay
+                await new Promise(r => setTimeout(r, 600)); 
+                return MOCK_DATA;
             }
         }
 
-        function getIcon(status) {
-            if(status === 'approved') return 'fa-check';
-            if(status === 'rejected') return 'fa-xmark';
+        // --- RENDER LOGIC ---
+        function getStatusClasses(status) {
+            if (status === 'approved') return 'status-approved';
+            if (status === 'rejected') return 'status-rejected';
+            return 'status-pending';
+        }
+
+        function getStatusIcon(status) {
+            if (status === 'approved') return 'fa-check';
+            if (status === 'rejected') return 'fa-xmark';
             return 'fa-clock';
         }
 
-        function renderCards(items) {
+        function renderDashboard(items) {
             const grid = document.getElementById('card-grid');
             const emptyState = document.getElementById('empty-state');
             
-            // Calculate Stats
-            document.getElementById('stat-total').innerText = items.length;
-            document.getElementById('stat-approved').innerText = items.filter(i => i.status === 'approved').length;
-            document.getElementById('stat-impact').innerText = (items.length * 124); // Fake score calculation
+            // 1. Calculate Stats
+            const total = items.length;
+            const approved = items.filter(i => i.status === 'approved').length;
+            // Impact Score = Sum of sentiment or default calculation
+            const impact = items.reduce((acc, curr) => acc + (curr.sentiment || 50), 0);
 
-            if (items.length === 0) {
+            // 2. Update Stats DOM
+            document.getElementById('stat-total').innerText = total;
+            document.getElementById('stat-approved').innerText = approved;
+            document.getElementById('stat-impact').innerText = impact;
+
+            // 3. Render Grid
+            if (total === 0) {
                 grid.innerHTML = '';
                 emptyState.classList.remove('hidden');
                 return;
             }
-
+            
+            emptyState.classList.add('hidden');
             grid.innerHTML = items.map((item, index) => `
-                <div class="glass-panel rounded-2xl p-6 relative group hover-spring opacity-0 animate-entry" style="animation-delay: ${index * 100}ms">
+                <div class="glass-panel rounded-2xl p-6 relative group hover-spring opacity-0 animate-[slideUp_0.6s_ease-out_forwards]" style="animation-delay: ${index * 100}ms">
                     
                     <div class="flex justify-between items-start mb-4">
                         <span class="text-[10px] font-mono uppercase tracking-widest text-zinc-500 border border-zinc-800 px-2 py-1 rounded-md bg-zinc-900/50">
-                            ${item.category}
+                            ${item.category || 'General'}
                         </span>
-                        <span class="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wide border ${getStatusStyle(item.status)}">
-                            <i class="fa-solid ${getIcon(item.status)}"></i>
+                        <span class="status-badge ${getStatusClasses(item.status)} flex items-center gap-1.5">
+                            <i class="fa-solid ${getStatusIcon(item.status)}"></i>
                             ${item.status}
                         </span>
                     </div>
 
                     <h3 class="text-white font-display font-semibold text-lg leading-snug mb-2 group-hover:text-neon-cyan transition-colors">
-                        ${item.summary}
+                        ${item.summary || 'No Summary'}
                     </h3>
                     <p class="text-zinc-500 text-sm line-clamp-2 mb-4">
-                        "${item.original}"
+                        "${item.original || item.text}"
                     </p>
 
                     <div class="pt-4 border-t border-white/5 flex items-center gap-3">
@@ -300,21 +294,19 @@
                         </div>
                         <div class="flex-1">
                             <p class="text-[10px] text-zinc-500 uppercase font-bold">AI Analysis</p>
-                            <p class="text-xs text-zinc-300 truncate">${item.ai_note}</p>
+                            <p class="text-xs text-zinc-300 truncate">${item.ai_summary || item.ai_note || 'Analysis pending...'}</p>
                         </div>
                     </div>
                 </div>
             `).join('');
         }
 
-        // 4. INIT
-        async function init() {
+        // --- INITIALIZATION ---
+        window.addEventListener('DOMContentLoaded', async () => {
             checkAuth();
-            const data = await safeFetch('/suggestions'); // In real app: /suggestions?user_id=123
-            renderCards(data);
-        }
-
-        window.addEventListener('DOMContentLoaded', init);
+            const data = await safeFetch('/suggestions');
+            renderDashboard(data);
+        });
 
     </script>
 </body>
