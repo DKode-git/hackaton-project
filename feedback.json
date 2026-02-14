@@ -1,1 +1,35 @@
-[]
+[
+    {
+        "id": "906e1a",
+        "status": "approved",
+        "category": "process",
+        "text": "eivnitgdkvyjig",
+        "username": "Fardeen",
+        "ai_summary": "eivnitgdkvyjig",
+        "ai_note": "Sentiment detected: 94% positive.",
+        "sentiment": 94,
+        "date": "2026-02-14"
+    },
+    {
+        "id": "3c1eaf0c",
+        "status": "rejected",
+        "category": "product",
+        "text": "We should implement 'No-Meeting Wednesdays' to allow deep focus time for the engineering team.",
+        "ai_summary": "AI Summary: We should implement ...",
+        "sentiment": 77,
+        "priority": "normal",
+        "owner": "current_user",
+        "date": "Just now"
+    },
+    {
+        "id": "ca0ca2b4",
+        "status": "approved",
+        "category": "process",
+        "text": "hi my name is lokashi",
+        "ai_summary": "AI Summary: hi my name is lokash...",
+        "sentiment": 82,
+        "priority": "normal",
+        "owner": "current_user",
+        "date": "Just now"
+    }
+]

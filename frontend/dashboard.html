@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nexus | Employee Portal</title>
+    <title>Nexus | User Dashboard</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -24,9 +24,6 @@
                     colors: {
                         zinc: { 950: '#09090b', 900: '#18181b', 850: '#27272a' },
                         neon: { cyan: '#22d3ee', purple: '#a855f7' }
-                    },
-                    animation: {
-                        'entry': 'slideUp 0.6s ease-out forwards',
                     }
                 }
             }
@@ -34,37 +31,26 @@
     </script>
 
     <style>
-        /* ANIMATIONS */
+        .glass-panel {
+            background: rgba(24, 24, 27, 0.6);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .status-badge-pending { @apply bg-yellow-500/10 text-yellow-500 border-yellow-500/20; }
+        .status-badge-approved { @apply bg-emerald-500/10 text-emerald-500 border-emerald-500/20; }
+        .status-badge-rejected { @apply bg-red-500/10 text-red-500 border-red-500/20; }
+        
         @keyframes slideUp {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        
-        .hover-spring { transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); }
-        .hover-spring:hover { transform: scale(1.02) translateY(-4px); }
-        .hover-spring:active { transform: scale(0.98); }
-        
-        /* GLASS UI */
-        .glass-panel {
-            background: rgba(24, 24, 27, 0.6);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-        }
-        
-        .status-badge { @apply px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wide border; }
-        .status-pending { @apply bg-yellow-500/10 text-yellow-500 border-yellow-500/20; }
-        .status-approved { @apply bg-emerald-500/10 text-emerald-500 border-emerald-500/20; }
-        .status-rejected { @apply bg-red-500/10 text-red-500 border-red-500/20; }
-        
-        /* SCROLLBAR */
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .animate-entry { animation: slideUp 0.6s ease-out forwards; }
     </style>
 </head>
-<body class="bg-zinc-950 text-zinc-300 font-sans h-screen flex overflow-hidden selection:bg-neon-cyan selection:text-black">
+<body class="bg-zinc-950 text-zinc-300 font-sans h-screen flex overflow-hidden">
 
-    <nav class="w-20 lg:w-64 border-r border-zinc-800 bg-zinc-900/50 backdrop-blur-xl flex flex-col justify-between py-6 z-20 transition-all duration-300">
-        
+    <nav class="w-20 lg:w-64 border-r border-zinc-800 bg-zinc-900/50 backdrop-blur-xl flex flex-col justify-between py-6 z-20">
         <div class="px-6 mb-8 flex items-center gap-3">
             <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-neon-cyan to-neon-purple flex items-center justify-center text-black font-bold text-xl shadow-lg shadow-neon-cyan/20">
                 <i class="fa-solid fa-layer-group"></i>
@@ -73,32 +59,22 @@
         </div>
 
         <div class="flex-1 px-4 space-y-2">
-            <button onclick="window.location.reload()" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-zinc-800/80 text-white border border-zinc-700 shadow-lg cursor-pointer">
+            <button class="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-zinc-800/80 text-white border border-zinc-700 shadow-lg">
                 <i class="fa-solid fa-grid-2 text-neon-cyan"></i>
-                <span class="hidden lg:block font-medium text-sm">My Suggestions</span>
+                <span class="hidden lg:block font-medium text-sm">Dashboard</span>
             </button>
-
-            <a href="submit.html" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-zinc-500 hover:text-white hover:bg-zinc-900 transition-all group">
-                <i class="fa-solid fa-plus group-hover:text-neon-purple transition-colors"></i>
+            <a href="submit.html" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-zinc-500 hover:text-white hover:bg-zinc-900 transition-all">
+                <i class="fa-solid fa-plus"></i>
                 <span class="hidden lg:block font-medium text-sm">New Request</span>
             </a>
-
-            <a href="profile.html" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-zinc-500 hover:text-white hover:bg-zinc-900 transition-all group">
-                <i class="fa-regular fa-user group-hover:text-neon-purple transition-colors"></i>
+            <a href="profile.html" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-zinc-500 hover:text-white hover:bg-zinc-900 transition-all">
+                <i class="fa-regular fa-user"></i>
                 <span class="hidden lg:block font-medium text-sm">Profile</span>
             </a>
         </div>
 
         <div class="px-4">
-            <div class="p-4 rounded-xl bg-gradient-to-br from-zinc-900 to-zinc-950 border border-zinc-800 hidden lg:block mb-4">
-                <p class="text-xs text-zinc-500 uppercase font-bold mb-1">Weekly Streak</p>
-                <div class="flex items-center gap-2">
-                    <i class="fa-solid fa-fire text-orange-500"></i>
-                    <span class="text-white font-mono">3 Days</span>
-                </div>
-            </div>
-            
-            <button onclick="logout()" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-zinc-500 hover:text-red-400 hover:bg-red-950/30 transition-all border border-transparent hover:border-red-900/50">
+             <button onclick="logout()" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-zinc-500 hover:text-red-400 hover:bg-red-950/30 transition-all">
                 <i class="fa-solid fa-arrow-right-from-bracket"></i>
                 <span class="hidden lg:block font-medium text-sm">Logout</span>
             </button>
@@ -110,38 +86,37 @@
 
         <header class="h-20 border-b border-zinc-800 flex items-center justify-between px-8 bg-zinc-900/30 backdrop-blur-sm z-10">
             <div>
-                <h1 class="font-display font-bold text-white text-2xl">My Dashboard</h1>
-                <p class="text-xs text-zinc-500 mt-1">Track the status of your AI-processed feedback.</p>
+                <h1 class="font-display font-bold text-white text-2xl" id="welcome-msg">My Dashboard</h1>
+                <p class="text-xs text-zinc-500 mt-1">Real-time status of your contributions.</p>
             </div>
-            <a href="submit.html" class="hover-spring bg-white text-black px-5 py-2.5 rounded-xl font-bold text-sm shadow-lg shadow-white/10 flex items-center gap-2">
-                <i class="fa-solid fa-plus"></i>
-                New Idea
+            <a href="submit.html" class="bg-white text-black px-5 py-2.5 rounded-xl font-bold text-sm shadow-lg shadow-white/10 flex items-center gap-2 hover:bg-gray-200 transition-colors">
+                <i class="fa-solid fa-plus"></i> New Idea
             </a>
         </header>
 
         <div class="flex-1 overflow-y-auto p-8 no-scrollbar">
             
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 animate-[slideUp_0.6s_ease-out_forwards]">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 animate-entry">
                 <div class="glass-panel p-5 rounded-2xl flex flex-col justify-between h-32">
-                    <div class="text-zinc-500 text-xs font-bold uppercase tracking-wider">Total Contributions</div>
-                    <div class="text-4xl font-display text-white" id="stat-total">--</div>
+                    <div class="text-zinc-500 text-xs font-bold uppercase tracking-wider">Total Requests</div>
+                    <div class="text-4xl font-display text-white" id="stat-total">0</div>
                     <div class="w-full bg-zinc-800 h-1 rounded-full overflow-hidden">
-                        <div class="bg-white h-full w-3/4"></div>
+                        <div class="bg-white h-full" style="width: 10%"></div>
                     </div>
                 </div>
                 <div class="glass-panel p-5 rounded-2xl flex flex-col justify-between h-32">
                     <div class="text-zinc-500 text-xs font-bold uppercase tracking-wider">Approved</div>
-                    <div class="text-4xl font-display text-emerald-400" id="stat-approved">--</div>
+                    <div class="text-4xl font-display text-emerald-400" id="stat-approved">0</div>
                     <div class="w-full bg-zinc-800 h-1 rounded-full overflow-hidden">
-                        <div class="bg-emerald-500 h-full w-1/2"></div>
+                        <div class="bg-emerald-500 h-full" style="width: 0%" id="bar-approved"></div>
                     </div>
                 </div>
                 <div class="glass-panel p-5 rounded-2xl flex flex-col justify-between h-32">
-                    <div class="text-zinc-500 text-xs font-bold uppercase tracking-wider">Impact Score</div>
-                    <div class="text-4xl font-display text-neon-cyan" id="stat-impact">--</div>
+                    <div class="text-zinc-500 text-xs font-bold uppercase tracking-wider">Avg Sentiment</div>
+                    <div class="text-4xl font-display text-neon-cyan" id="stat-impact">0%</div>
                     <div class="flex items-center gap-2 text-xs text-neon-cyan">
-                        <i class="fa-solid fa-arrow-trend-up"></i>
-                        <span>Top 10%</span>
+                        <i class="fa-solid fa-robot"></i>
+                        <span>AI Analyzed</span>
                     </div>
                 </div>
             </div>
@@ -149,12 +124,12 @@
             <div id="card-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 pb-20">
                 </div>
 
-            <div id="empty-state" class="hidden flex flex-col items-center justify-center h-64 text-center animate-[slideUp_0.6s_ease-out_forwards]">
+            <div id="empty-state" class="hidden flex flex-col items-center justify-center h-64 animate-entry text-center">
                 <div class="w-16 h-16 rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center mb-4 text-zinc-600 text-2xl">
                     <i class="fa-regular fa-lightbulb"></i>
                 </div>
                 <h3 class="text-white font-display font-bold text-lg">No suggestions yet</h3>
-                <p class="text-zinc-500 text-sm max-w-xs mt-2">Be the first to shape the future of the company. Submit your first idea now.</p>
+                <p class="text-zinc-500 text-sm max-w-xs mt-2">Submit your first idea to see AI analysis here.</p>
                 <a href="submit.html" class="mt-6 text-neon-cyan hover:text-white text-sm font-medium transition-colors">Start Writing &rarr;</a>
             </div>
 
@@ -162,130 +137,92 @@
     </main>
 
     <script>
-        // --- CONFIG & MOCK DATA ---
+        // --- LOGIC START ---
         const API_BASE_URL = "http://localhost:8000"; 
+
+        // 1. Check Auth
+        const username = localStorage.getItem('username');
+        const token = localStorage.getItem('token');
         
-        const MOCK_DATA = [
-            {
-                id: 1,
-                status: 'approved',
-                category: 'Productivity',
-                summary: 'Implement Deep Focus Tuesdays',
-                original: 'I think we should have a day where no meetings are allowed so we can actually code.',
-                ai_summary: 'Proposal for "Deep Focus Tuesdays" to eliminate meetings and enhance coding productivity.',
-                sentiment: 85
-            },
-            {
-                id: 2,
-                status: 'pending',
-                category: 'Facilities',
-                summary: 'Ergonomic Chair Upgrade',
-                original: 'My back is killing me, these chairs are from 2010. We need Herman Millers.',
-                ai_summary: 'Request for ergonomic furniture upgrades to address health concerns and improve comfort.',
-                sentiment: 60
-            },
-            {
-                id: 3,
-                status: 'rejected',
-                category: 'Cafeteria',
-                summary: 'Free Pizza Everyday',
-                original: 'We should just have pizza for lunch every single day.',
-                ai_summary: 'Suggestion for daily free pizza; potential budget and health conflict identified.',
-                sentiment: 40
-            }
-        ];
-
-        // --- AUTH LOGIC ---
-        function checkAuth() {
-            const token = localStorage.getItem('token');
-            const role = localStorage.getItem('role');
-            
-            if (!token) {
-                window.location.href = 'index.html';
-                return;
-            }
-            
-            // Optional: Redirect Admin to admin.html
-            // if (role === 'admin') window.location.href = 'admin.html';
-        }
-
-        function logout() {
-            localStorage.clear();
+        if (!token || !username) {
             window.location.href = 'index.html';
         }
 
-        // --- FETCH ENGINE ---
-        async function safeFetch(endpoint) {
-            const token = localStorage.getItem('token');
+        document.getElementById('welcome-msg').innerText = `Hello, ${username}`;
+
+        // 2. Fetch Data
+        async function fetchData() {
             try {
-                // Try Real API
-                const response = await fetch(`${API_BASE_URL}${endpoint}`, {
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
-                if (!response.ok) throw new Error("API Error");
-                return await response.json();
-            } catch (e) {
-                console.warn(`⚠️ API Unreachable. Using Mock Data for ${endpoint}`);
-                // Simulate Network Delay
-                await new Promise(r => setTimeout(r, 600)); 
-                return MOCK_DATA;
+                // Pass username as query param to filter on backend
+                const response = await fetch(`${API_BASE_URL}/suggestions?username=${username}`);
+                if (!response.ok) throw new Error("Failed to fetch");
+                
+                const data = await response.json();
+                renderDashboard(data);
+            } catch (error) {
+                console.error("Error:", error);
+                document.getElementById('card-grid').innerHTML = `<p class="text-red-500">Error connecting to server. Is Backend running?</p>`;
             }
         }
 
-        // --- RENDER LOGIC ---
-        function getStatusClasses(status) {
-            if (status === 'approved') return 'status-approved';
-            if (status === 'rejected') return 'status-rejected';
-            return 'status-pending';
-        }
-
-        function getStatusIcon(status) {
-            if (status === 'approved') return 'fa-check';
-            if (status === 'rejected') return 'fa-xmark';
-            return 'fa-clock';
-        }
-
+        // 3. Render
         function renderDashboard(items) {
             const grid = document.getElementById('card-grid');
             const emptyState = document.getElementById('empty-state');
-            
-            // 1. Calculate Stats
+
+            // A. Calculate Stats Dynamically
             const total = items.length;
             const approved = items.filter(i => i.status === 'approved').length;
-            // Impact Score = Sum of sentiment or default calculation
-            const impact = items.reduce((acc, curr) => acc + (curr.sentiment || 50), 0);
+            
+            // Calculate Avg Sentiment (Impact Score)
+            let totalSentiment = 0;
+            items.forEach(i => totalSentiment += (i.sentiment || 0));
+            const avgSentiment = total > 0 ? Math.round(totalSentiment / total) : 0;
 
-            // 2. Update Stats DOM
+            // Update DOM Stats
             document.getElementById('stat-total').innerText = total;
             document.getElementById('stat-approved').innerText = approved;
-            document.getElementById('stat-impact').innerText = impact;
+            document.getElementById('stat-impact').innerText = avgSentiment + "%";
+            
+            // Update Progress Bar width
+            const approvedPercent = total > 0 ? (approved / total) * 100 : 0;
+            document.getElementById('bar-approved').style.width = `${approvedPercent}%`;
 
-            // 3. Render Grid
+            // B. Handle Empty State
             if (total === 0) {
                 grid.innerHTML = '';
                 emptyState.classList.remove('hidden');
                 return;
+            } else {
+                emptyState.classList.add('hidden');
             }
-            
-            emptyState.classList.add('hidden');
-            grid.innerHTML = items.map((item, index) => `
-                <div class="glass-panel rounded-2xl p-6 relative group hover-spring opacity-0 animate-[slideUp_0.6s_ease-out_forwards]" style="animation-delay: ${index * 100}ms">
+
+            // C. Render Cards
+            grid.innerHTML = items.map((item, index) => {
+                const statusClass = item.status === 'approved' ? 'status-badge-approved' : 
+                                    item.status === 'rejected' ? 'status-badge-rejected' : 'status-badge-pending';
+                
+                const icon = item.status === 'approved' ? 'fa-check' : 
+                             item.status === 'rejected' ? 'fa-xmark' : 'fa-clock';
+
+                return `
+                <div class="glass-panel rounded-2xl p-6 relative group hover:scale-[1.02] transition-transform duration-300 opacity-0 animate-entry" style="animation-delay: ${index * 100}ms">
                     
                     <div class="flex justify-between items-start mb-4">
                         <span class="text-[10px] font-mono uppercase tracking-widest text-zinc-500 border border-zinc-800 px-2 py-1 rounded-md bg-zinc-900/50">
                             ${item.category || 'General'}
                         </span>
-                        <span class="status-badge ${getStatusClasses(item.status)} flex items-center gap-1.5">
-                            <i class="fa-solid ${getStatusIcon(item.status)}"></i>
+                        <span class="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wide border ${statusClass}">
+                            <i class="fa-solid ${icon}"></i>
                             ${item.status}
                         </span>
                     </div>
 
                     <h3 class="text-white font-display font-semibold text-lg leading-snug mb-2 group-hover:text-neon-cyan transition-colors">
-                        ${item.summary || 'No Summary'}
+                        ${item.ai_summary || 'No Summary'}
                     </h3>
                     <p class="text-zinc-500 text-sm line-clamp-2 mb-4">
-                        "${item.original || item.text}"
+                        "${item.text || ''}"
                     </p>
 
                     <div class="pt-4 border-t border-white/5 flex items-center gap-3">
@@ -294,20 +231,22 @@
                         </div>
                         <div class="flex-1">
                             <p class="text-[10px] text-zinc-500 uppercase font-bold">AI Analysis</p>
-                            <p class="text-xs text-zinc-300 truncate">${item.ai_summary || item.ai_note || 'Analysis pending...'}</p>
+                            <p class="text-xs text-zinc-300 truncate">${item.ai_note || 'Processed'}</p>
                         </div>
+                        <div class="text-xs font-mono text-zinc-600">${item.date || ''}</div>
                     </div>
                 </div>
-            `).join('');
+                `;
+            }).join('');
         }
 
-        // --- INITIALIZATION ---
-        window.addEventListener('DOMContentLoaded', async () => {
-            checkAuth();
-            const data = await safeFetch('/suggestions');
-            renderDashboard(data);
-        });
+        function logout() {
+            localStorage.clear();
+            window.location.href = 'index.html';
+        }
 
+        // Init
+        window.addEventListener('DOMContentLoaded', fetchData);
     </script>
 </body>
 </html>

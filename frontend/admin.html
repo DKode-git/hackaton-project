@@ -13,14 +13,11 @@
         tailwind.config = {
             theme: {
                 extend: {
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                        display: ['Space Grotesk', 'sans-serif'],
-                    },
+                    fontFamily: { sans: ['Inter', 'sans-serif'], display: ['Space Grotesk', 'sans-serif'] },
                     colors: {
                         slate: { 850: '#151e2e', 900: '#0f172a', 950: '#020617' },
-                        primary: { 400: '#22d3ee', 500: '#06b6d4' }, // Cyan
-                        accent: { 400: '#a78bfa', 500: '#8b5cf6' },  // Violet
+                        primary: { 400: '#22d3ee', 500: '#06b6d4' },
+                        accent: { 400: '#a78bfa', 500: '#8b5cf6' },
                     }
                 }
             }
@@ -28,58 +25,15 @@
     </script>
 
     <style>
-        body {
-            background-color: #0f172a;
-            color: #e2e8f0;
-            overflow-x: hidden;
-        }
-
-        /* PHYSICS ANIMATION ENGINE */
-        .hover-spring {
-            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
-        }
-        .hover-spring:hover {
-            transform: scale(1.02) translateY(-2px);
-            box-shadow: 0 10px 30px -10px rgba(34, 211, 238, 0.2);
-        }
-
-        /* Entry Animation */
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .animate-entry {
-            animation: slideUp 0.6s ease-out forwards;
-        }
-        
-        tr.animate-entry:nth-child(1) { animation-delay: 0.1s; }
-        tr.animate-entry:nth-child(2) { animation-delay: 0.15s; }
-        tr.animate-entry:nth-child(3) { animation-delay: 0.2s; }
-        tr.animate-entry:nth-child(4) { animation-delay: 0.25s; }
-        tr.animate-entry:nth-child(5) { animation-delay: 0.3s; }
-
-        /* Glassmorphism */
+        body { background-color: #0f172a; color: #e2e8f0; overflow-x: hidden; }
+        .hover-spring { transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); }
+        .hover-spring:hover { transform: scale(1.02) translateY(-2px); }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-entry { animation: slideUp 0.6s ease-out forwards; }
         .glass-panel {
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
+            background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(16px);
             border: 1px solid rgba(255, 255, 255, 0.05);
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
         }
-        
-        .glass-header {
-            background: rgba(15, 23, 42, 0.7);
-            backdrop-filter: blur(12px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        /* Scrollbar */
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #0f172a; }
-        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #475569; }
-
-        /* Status Indicators */
         .status-dot { height: 8px; width: 8px; border-radius: 50%; display: inline-block; margin-right: 6px; }
         .status-pending { background-color: #facc15; box-shadow: 0 0 10px #facc15aa; }
         .status-approved { background-color: #4ade80; box-shadow: 0 0 10px #4ade80aa; }
@@ -88,7 +42,7 @@
 </head>
 <body class="antialiased min-h-screen flex flex-col md:flex-row">
 
-    <aside class="w-full md:w-64 glass-header md:h-screen fixed md:sticky top-0 z-50 flex flex-col justify-between border-r border-slate-800/50">
+    <aside class="w-full md:w-64 bg-slate-900/80 backdrop-blur-md md:h-screen fixed md:sticky top-0 z-50 flex flex-col justify-between border-r border-slate-800/50">
         <div>
             <div class="p-6 flex items-center gap-3">
                 <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-primary-400 to-accent-500 flex items-center justify-center shadow-lg shadow-primary-500/20">
@@ -98,30 +52,23 @@
             </div>
 
             <nav class="px-4 space-y-2 mt-4">
-                <a href="dashboard.html" class="flex items-center gap-3 px-4 py-3 text-slate-400 hover:text-white hover:bg-white/5 rounded-xl transition-all duration-200">
-                    <i class="fa-solid fa-house w-5"></i> User View
-                </a>
-                
                 <a href="admin.html" class="flex items-center gap-3 px-4 py-3 bg-primary-500/10 text-primary-400 border border-primary-500/20 rounded-xl transition-all duration-200">
                     <i class="fa-solid fa-shield-halved w-5"></i> Admin Center
                 </a>
-
-                <a href="profile.html" class="flex items-center gap-3 px-4 py-3 text-slate-400 hover:text-white hover:bg-white/5 rounded-xl transition-all duration-200">
-                    <i class="fa-solid fa-user w-5"></i> Profile
+                <a href="dashboard.html" class="flex items-center gap-3 px-4 py-3 text-slate-400 hover:text-white hover:bg-white/5 rounded-xl transition-all duration-200">
+                    <i class="fa-solid fa-house w-5"></i> User View
                 </a>
             </nav>
         </div>
 
         <div class="p-6 border-t border-slate-800/50">
             <div class="flex items-center gap-3">
-                <div id="admin-avatar-container" class="w-10 h-10 rounded-full bg-slate-700 flex items-center justify-center ring-2 ring-primary-500/30 font-bold text-white">
-                    AD
-                </div>
+                <div class="w-10 h-10 rounded-full bg-slate-700 flex items-center justify-center ring-2 ring-primary-500/30 font-bold text-white">AD</div>
                 <div>
-                    <p class="text-sm font-semibold text-white" id="admin-username-display">Admin</p>
-                    <p class="text-xs text-slate-500">Super Admin</p>
+                    <p class="text-sm font-semibold text-white">Administrator</p>
+                    <p class="text-xs text-slate-500">Super User</p>
                 </div>
-                <button onclick="logout()" class="ml-auto text-slate-500 hover:text-red-400 transition-colors" title="Logout">
+                <button onclick="logout()" class="ml-auto text-slate-500 hover:text-red-400 transition-colors">
                     <i class="fa-solid fa-arrow-right-from-bracket"></i>
                 </button>
             </div>
@@ -129,372 +76,177 @@
     </aside>
 
     <main class="flex-1 p-6 md:p-10 relative">
-        <div class="absolute top-0 left-0 w-full h-96 bg-gradient-to-b from-primary-500/5 to-transparent pointer-events-none"></div>
-
         <header class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-10 animate-entry">
             <div>
                 <h2 class="font-display text-3xl font-bold text-white mb-1">Command Center</h2>
-                <p class="text-slate-400">Manage suggestions and feedback flow.</p>
+                <p class="text-slate-400">Manage all employee feedback from one place.</p>
             </div>
-            <div class="flex gap-3">
-                <button onclick="fetchSuggestions()" class="glass-panel hover-spring px-5 py-2.5 rounded-xl text-sm font-medium text-slate-300 hover:text-white flex items-center gap-2">
-                    <i class="fa-solid fa-rotate"></i> Refresh
-                </button>
-                
-                <button onclick="exportCSV()" class="bg-gradient-to-r from-primary-500 to-accent-500 hover:from-primary-400 hover:to-accent-400 text-white px-5 py-2.5 rounded-xl text-sm font-bold shadow-lg shadow-primary-500/25 active:scale-95 transition-all duration-200 flex items-center gap-2">
-                    <i class="fa-solid fa-download"></i> Export CSV
-                </button>
-            </div>
+            <button onclick="fetchSuggestions()" class="glass-panel hover-spring px-5 py-2.5 rounded-xl text-sm font-medium text-slate-300 hover:text-white flex items-center gap-2">
+                <i class="fa-solid fa-rotate"></i> Refresh Data
+            </button>
         </header>
 
-        <section class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10 animate-entry" style="animation-delay: 0.1s">
-            <div class="glass-panel p-6 rounded-2xl relative overflow-hidden group">
-                <div class="absolute right-0 top-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-                    <i class="fa-solid fa-hourglass-half text-6xl text-yellow-400"></i>
-                </div>
+        <section class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10 animate-entry">
+            <div class="glass-panel p-6 rounded-2xl">
                 <p class="text-slate-400 text-sm font-medium uppercase tracking-wider mb-2">Pending Review</p>
-                <h3 class="text-4xl font-display font-bold text-white" id="stat-pending">0</h3>
-                <div class="mt-4 text-xs text-yellow-400 flex items-center gap-1">
-                    <i class="fa-solid fa-circle-exclamation"></i> Needs Action
-                </div>
+                <h3 class="text-4xl font-display font-bold text-white" id="stat-pending">--</h3>
             </div>
-
-            <div class="glass-panel p-6 rounded-2xl relative overflow-hidden group">
-                <div class="absolute right-0 top-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-                    <i class="fa-solid fa-check-circle text-6xl text-primary-400"></i>
-                </div>
+            <div class="glass-panel p-6 rounded-2xl">
                 <p class="text-slate-400 text-sm font-medium uppercase tracking-wider mb-2">Total Approved</p>
-                <h3 class="text-4xl font-display font-bold text-white" id="stat-approved">0</h3>
-                <div class="mt-4 text-xs text-primary-400 flex items-center gap-1">
-                    <i class="fa-solid fa-arrow-trend-up"></i> Lifetime
-                </div>
+                <h3 class="text-4xl font-display font-bold text-emerald-400" id="stat-approved">--</h3>
             </div>
-
-            <div class="glass-panel p-6 rounded-2xl relative overflow-hidden group">
-                <div class="absolute right-0 top-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-                    <i class="fa-solid fa-chart-simple text-6xl text-accent-400"></i>
-                </div>
+            <div class="glass-panel p-6 rounded-2xl">
                 <p class="text-slate-400 text-sm font-medium uppercase tracking-wider mb-2">Approval Rate</p>
-                <h3 class="text-4xl font-display font-bold text-white" id="stat-rate">0%</h3>
-                <div class="mt-4 text-xs text-accent-400 flex items-center gap-1">
-                    <i class="fa-solid fa-calculator"></i> Live Calc
-                </div>
+                <h3 class="text-4xl font-display font-bold text-accent-400" id="stat-rate">--%</h3>
             </div>
         </section>
 
-        <section class="glass-panel rounded-2xl overflow-hidden animate-entry" style="animation-delay: 0.2s">
+        <section class="glass-panel rounded-2xl overflow-hidden animate-entry">
             <div class="p-6 border-b border-slate-800/50 flex justify-between items-center">
-                <h3 class="text-lg font-bold text-white">Recent Suggestions</h3>
-                <div class="relative">
-                    <input type="text" id="searchInput" onkeyup="filterTable()" placeholder="Search users or content..." class="bg-slate-900/50 border border-slate-700 text-slate-300 text-sm rounded-xl focus:ring-primary-500 focus:border-primary-500 block w-64 pl-10 p-2.5">
-                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <i class="fa-solid fa-magnifying-glass text-slate-500"></i>
-                    </div>
-                </div>
+                <h3 class="text-lg font-bold text-white">Global Suggestion Feed</h3>
+                <input type="text" id="searchInput" onkeyup="filterTable()" placeholder="Search..." class="bg-slate-900/50 border border-slate-700 text-slate-300 text-sm rounded-xl px-4 py-2 w-64">
             </div>
             
             <div class="overflow-x-auto">
                 <table class="w-full text-left text-sm text-slate-400">
                     <thead class="bg-slate-900/40 text-xs uppercase font-semibold text-slate-300">
                         <tr>
-                            <th scope="col" class="px-6 py-4">User</th>
-                            <th scope="col" class="px-6 py-4">Summary</th>
-                            <th scope="col" class="px-6 py-4">Category</th>
-                            <th scope="col" class="px-6 py-4">Sentiment</th>
-                            <th scope="col" class="px-6 py-4">Status</th>
-                            <th scope="col" class="px-6 py-4 text-right">Actions</th>
+                            <th class="px-6 py-4">User</th>
+                            <th class="px-6 py-4">Summary</th>
+                            <th class="px-6 py-4">Category</th>
+                            <th class="px-6 py-4">Sentiment</th>
+                            <th class="px-6 py-4">Status</th>
+                            <th class="px-6 py-4 text-right">Actions</th>
                         </tr>
                     </thead>
-                    <tbody id="suggestions-table-body" class="divide-y divide-slate-800/50">
-                        </tbody>
+                    <tbody id="suggestions-table-body" class="divide-y divide-slate-800/50"></tbody>
                 </table>
             </div>
-            <div class="p-4 border-t border-slate-800/50 flex justify-center text-xs text-slate-600">
-                End of list
-            </div>
         </section>
-
     </main>
 
     <script>
-        // --- CONFIGURATION ---
-        const API_BASE_URL = "https://your-render-app.onrender.com"; // UPDATE THIS IF NEEDED
+        // --- LOGIC START ---
+        const API_BASE_URL = "http://localhost:8000"; 
+        let globalData = [];
 
-        // --- STATE & MOCK DATA ---
-        let suggestions = [];
-        
-        // Mock Data (Fallback if API fails during demo)
-        const MOCK_DATA = {
-            suggestions: [
-                { id: 101, username: "alice_c", text: "Add Dark Mode support for mobile view", ai_summary: "Dark Mode Request", category: "UI/UX", sentiment: 90, status: "pending" },
-                { id: 102, username: "bob_s", text: "Login button broken on Safari", ai_summary: "Safari Login Bug", category: "Bug", sentiment: 20, status: "pending" },
-                { id: 103, username: "charlie", text: "Great app!", ai_summary: "Positive Feedback", category: "General", sentiment: 95, status: "approved" }
-            ]
-        };
+        // 1. Auth Check
+        if (!localStorage.getItem('token')) window.location.href = 'index.html';
 
-        // --- 1. AUTH & INIT ---
-        function init() {
-            // Load user profile into sidebar
-            const username = localStorage.getItem('username') || 'Admin';
-            document.getElementById('admin-username-display').innerText = username;
-            document.getElementById('admin-avatar-container').innerText = username.substring(0, 2).toUpperCase();
-
-            // Strict Role Check
-            const role = localStorage.getItem('role');
-            const token = localStorage.getItem('token');
-
-            // UNCOMMENT FOR PRODUCTION:
-            /*
-            if (!token || role !== 'admin') {
-                alert("Access Denied. Admins only.");
-                window.location.href = 'index.html';
-                return;
-            }
-            */
-
-            fetchSuggestions();
-        }
-
-        // --- 2. DYNAMIC FETCH WITH AUTH HEADERS ---
-        async function safeFetch(endpoint, options = {}) {
-            const token = localStorage.getItem('token');
-            
-            // Merge defaults with options
-            const config = {
-                ...options,
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`,
-                    ...options.headers
-                }
-            };
-
-            try {
-                const response = await fetch(`${API_BASE_URL}${endpoint}`, config);
-                if (!response.ok) throw new Error(`API Error: ${response.status}`);
-                return await response.json();
-            } catch (error) {
-                console.warn(`API Connection Failed (${endpoint}). Using Mock Data/Action.`);
-                // Simulate delay
-                await new Promise(r => setTimeout(r, 600));
-
-                if (endpoint.includes('/suggestions') && options.method === 'PATCH') {
-                    return { success: true }; 
-                }
-                // Return mock data for GET requests
-                return MOCK_DATA.suggestions;
-            }
-        }
-
-        // --- 3. CORE LOGIC ---
+        // 2. Fetch Data (GLOBAL)
         async function fetchSuggestions() {
-            const btn = document.querySelector('button[onclick="fetchSuggestions()"] i');
-            btn.classList.add('fa-spin'); // Visual feedback
-
-            const data = await safeFetch('/suggestions');
-            suggestions = data;
-            
-            renderTable();
-            updateStats();
-            
-            btn.classList.remove('fa-spin');
-        }
-
-        function calculateStats() {
-            const total = suggestions.length;
-            const pending = suggestions.filter(s => s.status === 'pending').length;
-            const approved = suggestions.filter(s => s.status === 'approved').length;
-            const decided = total - pending;
-            const rate = decided > 0 ? Math.round((approved / decided) * 100) : 0;
-            return { pending, approved, rate };
-        }
-
-        function updateStats() {
-            const stats = calculateStats();
-            animateValue("stat-pending", stats.pending);
-            animateValue("stat-approved", stats.approved);
-            document.getElementById('stat-rate').innerText = stats.rate + '%';
-        }
-
-        function animateValue(id, end) {
-            const obj = document.getElementById(id);
-            if(!obj) return;
-            obj.innerHTML = end; 
-            // Simplified animation for stability
-        }
-
-        // --- 4. RENDER & HELPERS ---
-        function getSentimentColor(score) {
-            // Adjust based on your API (0-100 or 0.0-1.0)
-            const val = score > 1 ? score / 100 : score; 
-            if (val >= 0.7) return 'bg-green-500';
-            if (val >= 0.4) return 'bg-yellow-500';
-            return 'bg-red-500';
-        }
-
-        function getStatusBadge(status) {
-            switch(status) {
-                case 'approved': return `<span class="px-2 py-1 rounded-full text-xs font-medium bg-green-500/10 text-green-400 border border-green-500/20 capitalize"><span class="status-dot status-approved"></span>${status}</span>`;
-                case 'rejected': return `<span class="px-2 py-1 rounded-full text-xs font-medium bg-red-500/10 text-red-400 border border-red-500/20 capitalize"><span class="status-dot status-rejected"></span>${status}</span>`;
-                default: return `<span class="px-2 py-1 rounded-full text-xs font-medium bg-yellow-500/10 text-yellow-400 border border-yellow-500/20 capitalize"><span class="status-dot status-pending"></span>${status}</span>`;
+            try {
+                // NOTE: No ?username= param here. We want EVERYTHING.
+                const response = await fetch(`${API_BASE_URL}/suggestions`);
+                if (!response.ok) throw new Error("API Error");
+                globalData = await response.json();
+                
+                renderTable(globalData);
+                calculateStats(globalData);
+            } catch (error) {
+                console.error(error);
+                alert("Error connecting to backend.");
             }
         }
 
-        function renderTable() {
+        // 3. Render Table
+        function renderTable(data) {
             const tbody = document.getElementById('suggestions-table-body');
             tbody.innerHTML = '';
 
-            suggestions.forEach((item, index) => {
+            data.forEach((item, index) => {
+                const sentimentColor = item.sentiment > 75 ? 'bg-green-500' : item.sentiment > 40 ? 'bg-yellow-500' : 'bg-red-500';
+                
+                // Status Badge Logic
+                let statusBadge = '';
+                if(item.status === 'approved') statusBadge = `<span class="px-2 py-1 rounded-full text-xs font-medium bg-green-500/10 text-green-400 border border-green-500/20"><span class="status-dot status-approved"></span>Approved</span>`;
+                else if(item.status === 'rejected') statusBadge = `<span class="px-2 py-1 rounded-full text-xs font-medium bg-red-500/10 text-red-400 border border-red-500/20"><span class="status-dot status-rejected"></span>Rejected</span>`;
+                else statusBadge = `<span class="px-2 py-1 rounded-full text-xs font-medium bg-yellow-500/10 text-yellow-400 border border-yellow-500/20"><span class="status-dot status-pending"></span>Pending</span>`;
+
+                // Action Buttons Logic
+                let actionBtns = '';
+                if(item.status === 'pending') {
+                    actionBtns = `
+                        <button onclick="updateStatus('${item.id}', 'approved')" class="text-slate-400 hover:text-green-400 mx-1 p-2 rounded-full hover:bg-green-400/10"><i class="fa-solid fa-check"></i></button>
+                        <button onclick="updateStatus('${item.id}', 'rejected')" class="text-slate-400 hover:text-red-400 mx-1 p-2 rounded-full hover:bg-red-400/10"><i class="fa-solid fa-xmark"></i></button>
+                    `;
+                } else {
+                    actionBtns = `<span class="text-xs text-slate-600 italic">Decided</span>`;
+                }
+
                 const tr = document.createElement('tr');
                 tr.className = "hover:bg-white/5 transition-colors animate-entry";
                 tr.style.animationDelay = `${index * 0.05}s`;
-                tr.id = `row-${item.id}`;
-
-                // Handle variations in data naming (API vs Mock)
-                const displayText = item.ai_summary || item.text.substring(0, 30) + "...";
-                const displayUser = item.username || item.user || "User";
-                
-                // Sentiment Calc
-                const sentimentScore = item.sentiment > 1 ? item.sentiment : item.sentiment * 100;
-                const sentimentColor = getSentimentColor(item.sentiment);
-
                 tr.innerHTML = `
-                    <td class="px-6 py-4 whitespace-nowrap">
-                        <div class="flex items-center">
-                            <div class="flex-shrink-0 h-8 w-8 rounded-full bg-slate-700 flex items-center justify-center text-xs font-bold text-white border border-slate-600">
-                                ${displayUser.substring(0,2).toUpperCase()}
-                            </div>
-                            <div class="ml-4">
-                                <div class="text-sm font-medium text-white">${displayUser}</div>
-                            </div>
-                        </div>
-                    </td>
+                    <td class="px-6 py-4 font-medium text-white">${item.username || 'Anon'}</td>
+                    <td class="px-6 py-4 truncate max-w-xs" title="${item.text}">${item.ai_summary || item.text}</td>
+                    <td class="px-6 py-4"><span class="px-2 py-1 rounded-md bg-slate-800 text-xs border border-slate-700">${item.category}</span></td>
                     <td class="px-6 py-4">
-                        <div class="text-sm text-slate-300 truncate max-w-xs" title="${item.text}">${displayText}</div>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-md bg-slate-800 text-slate-400 border border-slate-700">
-                            ${item.category || 'General'}
-                        </span>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                        <div class="w-24 bg-slate-800 rounded-full h-1.5 overflow-hidden">
-                            <div class="${sentimentColor} h-1.5 rounded-full" style="width: ${sentimentScore}%"></div>
+                        <div class="flex items-center gap-2">
+                            <div class="w-16 h-1.5 bg-slate-800 rounded-full overflow-hidden">
+                                <div class="${sentimentColor} h-full" style="width: ${item.sentiment}%"></div>
+                            </div>
+                            <span class="text-xs">${item.sentiment}%</span>
                         </div>
-                        <div class="text-xs text-slate-500 mt-1">${sentimentScore}% Positive</div>
                     </td>
-                    <td class="px-6 py-4 whitespace-nowrap" id="status-${item.id}">
-                        ${getStatusBadge(item.status)}
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                        ${item.status === 'pending' ? `
-                            <button onclick="updateStatus(${item.id}, 'approved')" class="text-slate-400 hover:text-green-400 mx-1 p-2 rounded-full hover:bg-green-400/10 transition-colors" title="Approve">
-                                <i class="fa-solid fa-check"></i>
-                            </button>
-                            <button onclick="updateStatus(${item.id}, 'rejected')" class="text-slate-400 hover:text-red-400 mx-1 p-2 rounded-full hover:bg-red-400/10 transition-colors" title="Reject">
-                                <i class="fa-solid fa-xmark"></i>
-                            </button>
-                        ` : '<span class="text-slate-600 text-xs italic">Decided</span>'}
-                    </td>
+                    <td class="px-6 py-4">${statusBadge}</td>
+                    <td class="px-6 py-4 text-right">${actionBtns}</td>
                 `;
                 tbody.appendChild(tr);
             });
         }
 
-        // --- 5. ACTION HANDLERS ---
-
+        // 4. Update Status (PATCH)
         async function updateStatus(id, newStatus) {
-            // Optimistic UI Update
-            const row = document.getElementById(`row-${id}`);
-            const statusCell = document.getElementById(`status-${id}`);
-            const actionButtons = row.lastElementChild;
-
-            row.style.backgroundColor = newStatus === 'approved' ? "rgba(74, 222, 128, 0.1)" : "rgba(248, 113, 113, 0.1)";
-            statusCell.innerHTML = getStatusBadge(newStatus);
-            actionButtons.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-primary-400"></i>';
-
-            // Local Update
-            const item = suggestions.find(s => s.id === id);
-            if(item) item.status = newStatus;
-            updateStats();
-
-            // API Call
             try {
-                await safeFetch(`/suggestions/${id}`, {
+                const response = await fetch(`${API_BASE_URL}/suggestions/${id}`, {
                     method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ status: newStatus })
                 });
 
-                // Finalize UI
-                setTimeout(() => {
-                    row.style.backgroundColor = "";
-                    actionButtons.innerHTML = '<span class="text-slate-600 text-xs italic">Decided</span>';
-                }, 500);
-
-            } catch (error) {
-                console.error("Update failed", error);
-                alert("Failed to update. Reverting.");
-                item.status = 'pending'; // Revert state
-                renderTable(); // Re-render
-            }
-        }
-
-        // --- 6. EXPORT CSV FUNCTION (New Feature) ---
-        function exportCSV() {
-            if (suggestions.length === 0) {
-                alert("No data to export.");
-                return;
-            }
-
-            // Define Headers
-            let csvContent = "data:text/csv;charset=utf-8,";
-            csvContent += "ID,User,Summary,Category,Sentiment,Status\n";
-
-            // Define Rows
-            suggestions.forEach(item => {
-                const cleanSummary = (item.ai_summary || item.text).replace(/,/g, " "); // Remove commas to prevent CSV break
-                const row = `${item.id},${item.username || item.user},${cleanSummary},${item.category},${item.sentiment},${item.status}`;
-                csvContent += row + "\n";
-            });
-
-            // Trigger Download
-            const encodedUri = encodeURI(csvContent);
-            const link = document.createElement("a");
-            link.setAttribute("href", encodedUri);
-            link.setAttribute("download", "hackbox_data_export.csv");
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        }
-
-        // --- 7. UTILS ---
-        function filterTable() {
-            const input = document.getElementById('searchInput');
-            const filter = input.value.toLowerCase();
-            const rows = document.getElementById('suggestions-table-body').getElementsByTagName('tr');
-
-            for (let i = 0; i < rows.length; i++) {
-                const userText = rows[i].getElementsByTagName("td")[0].textContent || "";
-                const summaryText = rows[i].getElementsByTagName("td")[1].textContent || "";
-                
-                if (userText.toLowerCase().indexOf(filter) > -1 || summaryText.toLowerCase().indexOf(filter) > -1) {
-                    rows[i].style.display = "";
+                if (response.ok) {
+                    // Refresh data to show new status
+                    fetchSuggestions();
                 } else {
-                    rows[i].style.display = "none";
+                    alert("Failed to update status");
                 }
+            } catch (e) {
+                console.error(e);
             }
+        }
+
+        // 5. Dynamic Stats Calculation
+        function calculateStats(items) {
+            const total = items.length;
+            const pending = items.filter(i => i.status === 'pending').length;
+            const approved = items.filter(i => i.status === 'approved').length;
+            const rejected = items.filter(i => i.status === 'rejected').length;
+            
+            const totalDecided = approved + rejected;
+            const rate = totalDecided > 0 ? Math.round((approved / totalDecided) * 100) : 0;
+
+            document.getElementById('stat-pending').innerText = pending;
+            document.getElementById('stat-approved').innerText = approved;
+            document.getElementById('stat-rate').innerText = rate + "%";
+        }
+
+        function filterTable() {
+            const term = document.getElementById('searchInput').value.toLowerCase();
+            const filtered = globalData.filter(item => 
+                (item.username && item.username.toLowerCase().includes(term)) || 
+                (item.text && item.text.toLowerCase().includes(term))
+            );
+            renderTable(filtered);
         }
 
         function logout() {
-            if(confirm("Log out of Admin Console?")) {
-                localStorage.clear(); // Clear token, role, etc.
-                window.location.href = 'index.html'; 
-            }
+            localStorage.clear();
+            window.location.href = 'index.html';
         }
 
-        // START ENGINE
-        window.addEventListener('DOMContentLoaded', init);
-
+        // Init
+        window.addEventListener('DOMContentLoaded', fetchSuggestions);
     </script>
 </body>
 </html>
