@@ -1,0 +1,17 @@
+{
+    "users": [
+        {
+            "user_id": "user_05c50330",
+            "username": "Fardeen",
+            "email": "Fardeen@example.com",
+            "password": "abcd1234",
+            "stats": {
+                "steps": 0,
+                "stepGoal": 10000,
+                "calories": 0,
+                "calGoal": 2500,
+                "hydration": 0
+            }
+        }
+    ]
+}

@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Identity | Zero-Build</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0f172a; /* Slate-900 */
+            color: #e2e8f0;
+            overflow: hidden; /* Prevent scroll on this view */
+        }
+
+        h1, h2, h3, .font-display {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        /* The "Spring" Rule (Framer Motion Mimicry) */
+        .hover-spring {
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
+        }
+        .hover-spring:hover {
+            transform: scale(1.02) translateY(-4px);
+            box-shadow: 0 20px 25px -5px rgba(6, 182, 212, 0.15), 0 8px 10px -6px rgba(6, 182, 212, 0.1);
+        }
+
+        /* The "Entry" Rule */
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-entry {
+            animation: slideUp 0.6s ease-out forwards;
+        }
+
+        /* Glassmorphism Utilities */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Background Grid */
+        .bg-grid {
+            background-size: 40px 40px;
+            background-image: linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                              linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+        }
+    </style>
+</head>
+<body class="h-screen w-full flex items-center justify-center bg-grid relative">
+
+    <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-violet-600/20 rounded-full blur-[120px] pointer-events-none"></div>
+    <div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-cyan-500/10 rounded-full blur-[120px] pointer-events-none"></div>
+
+    <main id="profile-container" class="relative z-10 w-full max-w-md p-6 animate-entry hidden">
+        
+        <div class="glass-panel rounded-3xl p-8 flex flex-col items-center relative overflow-hidden">
+            
+            <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-cyan-400 via-violet-500 to-cyan-400"></div>
+
+            <div class="absolute top-4 right-4">
+                <span class="flex h-3 w-3">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
+                </span>
+            </div>
+
+            <div class="relative mb-6 group">
+                <div class="w-32 h-32 rounded-full bg-gradient-to-br from-slate-800 to-slate-900 border-4 border-white/10 flex items-center justify-center shadow-2xl relative z-10">
+                    <span id="user-initials" class="text-4xl font-bold font-display text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-violet-400">
+                        </span>
+                </div>
+                <div class="absolute inset-0 bg-cyan-400/20 rounded-full blur-xl group-hover:bg-cyan-400/30 transition-all duration-500"></div>
+            </div>
+
+            <h2 id="user-name" class="text-3xl font-bold text-white mb-1 tracking-tight text-center">
+                </h2>
+            <p id="user-role" class="text-cyan-400 text-sm font-semibold tracking-widest uppercase mb-8">
+                </p>
+
+            <div class="w-full grid grid-cols-3 gap-4 mb-8">
+                <div class="glass-panel rounded-2xl p-3 text-center hover-spring cursor-default">
+                    <div class="text-xs text-slate-400 mb-1">LEVEL</div>
+                    <div class="text-xl font-bold text-white">42</div>
+                </div>
+                <div class="glass-panel rounded-2xl p-3 text-center hover-spring cursor-default">
+                    <div class="text-xs text-slate-400 mb-1">PROJECTS</div>
+                    <div id="project-count" class="text-xl font-bold text-white">--</div>
+                </div>
+                <div class="glass-panel rounded-2xl p-3 text-center hover-spring cursor-default">
+                    <div class="text-xs text-slate-400 mb-1">RANK</div>
+                    <div class="text-xl font-bold text-white">Top 5%</div>
+                </div>
+            </div>
+
+            <div class="w-full space-y-3 mb-8">
+                <div class="flex justify-between items-center p-3 rounded-xl bg-white/5 border border-white/5">
+                    <span class="text-slate-400 text-sm"><i class="fas fa-envelope mr-2"></i>Email</span>
+                    <span id="user-email" class="text-slate-200 text-sm font-mono">loading...</span>
+                </div>
+                <div class="flex justify-between items-center p-3 rounded-xl bg-white/5 border border-white/5">
+                    <span class="text-slate-400 text-sm"><i class="fas fa-id-badge mr-2"></i>Member Since</span>
+                    <span class="text-slate-200 text-sm font-mono">Oct 2023</span>
+                </div>
+            </div>
+
+            <button onclick="handleLogout()" class="w-full py-3.5 rounded-xl bg-red-500/10 border border-red-500/50 text-red-400 font-bold hover:bg-red-500 hover:text-white transition-all duration-300 active:scale-95 flex items-center justify-center gap-2 group">
+                <i class="fas fa-sign-out-alt group-hover:rotate-180 transition-transform duration-300"></i>
+                Sign Out
+            </button>
+
+            <div class="mt-4 text-xs text-slate-500">
+                Session ID: <span class="font-mono">8f92-a1b2</span>
+            </div>
+
+        </div>
+    </main>
+
+    <script>
+        // --- CONFIGURATION ---
+        const API_BASE_URL = "https://your-render-app.onrender.com"; // CHANGE THIS AFTER DEPLOYING
+
+        // --- MOCK DATA (The Safety Net) ---
+        const MOCK_PROFILE = {
+            id: 1,
+            name: "Alex Sterling",
+            role: "Senior Frontend Architect",
+            email: "alex.sterling@hackton.io",
+            projects: 14,
+            avatar: null // We generate initials
+        };
+
+        // --- STATE MANAGEMENT ---
+        let userProfile = null;
+
+        // --- FETCH WRAPPER (Backend Handoff) ---
+        async function safeFetch(endpoint) {
+            try {
+                // Simulate network delay for effect
+                await new Promise(r => setTimeout(r, 400));
+                
+                const response = await fetch(`${API_BASE_URL}${endpoint}`);
+                if (!response.ok) throw new Error("API Failure");
+                return await response.json();
+            } catch (e) {
+                console.warn(`API Error on ${endpoint}: ${e.message}. Using Mock Data.`);
+                return MOCK_PROFILE;
+            }
+        }
+
+        // --- DOM MANIPULATION ---
+        function getInitials(name) {
+            if (!name) return "??";
+            const parts = name.split(' ');
+            if (parts.length === 1) return parts[0].substring(0, 2).toUpperCase();
+            return (parts[0][0] + parts[1][0]).toUpperCase();
+        }
+
+        async function initProfile() {
+            // 1. Try to get user from localStorage (set by Login page)
+            const localUser = localStorage.getItem('currentUser');
+            
+            // 2. Decide source of truth
+            if (localUser) {
+                userProfile = JSON.parse(localUser);
+            } else {
+                // If accessed directly without login, fetch mock profile
+                userProfile = await safeFetch('/profile/me');
+            }
+
+            // 3. Render
+            render();
+        }
+
+        function render() {
+            // Inject Data
+            document.getElementById('user-name').innerText = userProfile.name;
+            document.getElementById('user-role').innerText = userProfile.role;
+            document.getElementById('user-email').innerText = userProfile.email;
+            document.getElementById('project-count').innerText = userProfile.projects || 12;
+            document.getElementById('user-initials').innerText = getInitials(userProfile.name);
+
+            // Show Content
+            const container = document.getElementById('profile-container');
+            container.classList.remove('hidden');
+            // Re-trigger animation
+            container.style.animation = 'none';
+            container.offsetHeight; /* trigger reflow */
+            container.style.animation = null; 
+        }
+
+        function handleLogout() {
+            // 1. Visual Feedback
+            const btn = document.querySelector('button');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = `<i class="fas fa-circle-notch fa-spin"></i> Clearing Session...`;
+            btn.classList.add('opacity-75', 'cursor-not-allowed');
+
+            // 2. Logic
+            setTimeout(() => {
+                localStorage.removeItem('currentUser');
+                
+                // In a real app, this redirects. 
+                // For this file demo, we reload or alert.
+                // window.location.href = 'index.html'; 
+                
+                alert("Logged out successfully! Redirecting to Login...");
+                // Resetting view to show the effect (usually you'd redirect)
+                location.reload(); 
+            }, 800);
+        }
+
+        // --- INITIALIZATION ---
+        document.addEventListener('DOMContentLoaded', initProfile);
+
+    </script>
+</body>
+</html>

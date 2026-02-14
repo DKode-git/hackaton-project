@@ -21,11 +21,13 @@
                         display: ['Space Grotesk', 'sans-serif'],
                     },
                     colors: {
-                        background: '#09090b',
-                        surface: '#18181b',
-                        ai: '#d946ef', // Fuchsia
-                        secondary: '#6366f1', // Indigo
-                        success: '#10b981', // Emerald
+                        zinc: { 950: '#09090b', 900: '#18181b', 850: '#27272a' },
+                        ai: { glow: '#d946ef', dim: '#86198f' }, // Fuchsia-500
+                        secondary: '#6366f1', // Indigo-500
+                    },
+                    animation: {
+                        'spin-slow': 'spin 12s linear infinite',
+                        'reverse-spin': 'spin 15s linear infinite reverse',
                     }
                 }
             }
@@ -33,414 +35,208 @@
     </script>
 
     <style>
-        /* The "Physics" Engine */
-        .hover-spring {
-            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
+        /* GLASSMORPHISM */
+        .glass-panel {
+            background: rgba(24, 24, 27, 0.4);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
         }
-        .hover-spring:hover {
-            transform: scale(1.02) translateY(-4px);
-            box-shadow: 0 20px 25px -5px rgba(217, 70, 239, 0.15), 0 8px 10px -6px rgba(217, 70, 239, 0.1);
+        .glass-input {
+            background: rgba(9, 9, 11, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+            transition: all 0.3s ease;
         }
-        .hover-spring:active {
-            transform: scale(0.96);
+        .glass-input:focus {
+            border-color: #d946ef;
+            box-shadow: 0 0 0 2px rgba(217, 70, 239, 0.2);
+            outline: none;
         }
 
-        /* Entry Animation */
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(30px); filter: blur(10px); }
-            to { opacity: 1; transform: translateY(0); filter: blur(0); }
-        }
-        .animate-entry {
-            animation: slideUp 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-        }
-        .delay-100 { animation-delay: 0.1s; }
-        .delay-200 { animation-delay: 0.2s; }
-        .delay-300 { animation-delay: 0.3s; }
-
-        /* Nebula Background Animation */
+        /* NEBULA ANIMATION */
         @keyframes nebulaMove {
-            0% { transform: translate(0, 0) scale(1); }
-            33% { transform: translate(30px, -50px) scale(1.1); }
-            66% { transform: translate(-20px, 20px) scale(0.9); }
-            100% { transform: translate(0, 0) scale(1); }
+            0% { transform: translate(0, 0) scale(1); opacity: 0.4; }
+            50% { transform: translate(20px, -20px) scale(1.1); opacity: 0.6; }
+            100% { transform: translate(0, 0) scale(1); opacity: 0.4; }
         }
         .nebula-blob {
-            animation: nebulaMove 20s infinite alternate ease-in-out;
+            animation: nebulaMove 10s infinite alternate ease-in-out;
         }
 
-        /* Glass Utility */
-        .glass-panel {
-            background: rgba(24, 24, 27, 0.6);
-            backdrop-filter: blur(24px);
-            -webkit-backdrop-filter: blur(24px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-        }
+        /* BUTTON HOVER */
+        .hover-spring { transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1); }
+        .hover-spring:hover { transform: scale(1.02); }
+        .hover-spring:active { transform: scale(0.98); }
 
-        /* Hidden Class Utility */
-        .hidden { display: none !important; }
+        /* TOAST ANIMATION */
+        #toast-container { transition: transform 0.3s ease, opacity 0.3s ease; }
+        .toast-hidden { transform: translateY(20px); opacity: 0; pointer-events: none; }
+        .toast-visible { transform: translateY(0); opacity: 1; pointer-events: auto; }
     </style>
 </head>
-<body class="bg-background text-white min-h-screen flex items-center justify-center overflow-hidden selection:bg-ai selection:text-white relative font-sans">
+<body class="bg-zinc-950 text-white min-h-screen flex items-center justify-center relative overflow-hidden font-sans">
 
-    <div class="fixed inset-0 z-0 overflow-hidden pointer-events-none">
-        <div class="nebula-blob absolute top-[-10%] left-[-10%] w-[500px] h-[500px] bg-ai/20 rounded-full blur-[100px]"></div>
-        <div class="nebula-blob absolute bottom-[-10%] right-[-10%] w-[600px] h-[600px] bg-secondary/20 rounded-full blur-[120px]" style="animation-delay: -5s;"></div>
+    <div class="fixed inset-0 z-0 pointer-events-none">
+        <div class="nebula-blob absolute top-[-10%] left-[-10%] w-[600px] h-[600px] bg-ai-glow/10 rounded-full blur-[100px]"></div>
+        <div class="nebula-blob absolute bottom-[-10%] right-[-10%] w-[500px] h-[500px] bg-secondary/10 rounded-full blur-[100px]" style="animation-delay: -5s;"></div>
     </div>
 
-    <main id="auth-container" class="relative z-10 w-full max-w-5xl p-6 animate-entry">
-        <div class="glass-panel rounded-3xl overflow-hidden shadow-2xl grid md:grid-cols-5 min-h-[600px]">
-            
-            <div class="md:col-span-2 bg-gradient-to-br from-surface to-black border-r border-white/5 relative flex flex-col items-center justify-center p-8 overflow-hidden group">
-                <div class="relative w-48 h-48 flex items-center justify-center">
-                    <div class="absolute inset-0 bg-gradient-to-r from-ai to-secondary rounded-full blur-2xl opacity-20 group-hover:opacity-40 transition duration-700"></div>
-                    <div class="relative z-10 text-6xl text-transparent bg-clip-text bg-gradient-to-br from-white to-gray-500 hover-spring cursor-default">
-                        <i class="fa-solid fa-fingerprint drop-shadow-[0_0_15px_rgba(217,70,239,0.5)]"></i>
-                    </div>
-                    <div class="absolute inset-0 border border-white/10 rounded-full animate-[spin_10s_linear_infinite]"></div>
-                    <div class="absolute inset-4 border border-white/5 rounded-full animate-[spin_15s_linear_infinite_reverse]"></div>
-                </div>
-                
-                <div class="mt-8 text-center">
-                    <h2 class="font-display text-2xl font-bold tracking-tight">Neural<span class="text-ai">Gate</span></h2>
-                    <p class="text-zinc-500 text-sm mt-2">Secure Access Point</p>
-                </div>
-
-                <div class="absolute bottom-6 text-[10px] text-zinc-700 font-mono">
-                    STATUS: UNVERIFIED
-                </div>
-            </div>
-
-            <div class="md:col-span-3 bg-surface/50 p-8 md:p-12 flex flex-col justify-center relative">
-                
-                <div class="flex space-x-1 bg-zinc-900/50 p-1 rounded-xl mb-10 w-max border border-white/5 mx-auto md:mx-0">
-                    <button onclick="switchTab('login')" id="tab-login" class="px-6 py-2 rounded-lg text-sm font-medium transition-all duration-300 bg-zinc-800 text-white shadow-lg border border-white/10">
-                        Login
-                    </button>
-                    <button onclick="switchTab('register')" id="tab-register" class="px-6 py-2 rounded-lg text-sm font-medium text-zinc-400 hover:text-white transition-all duration-300">
-                        Register
-                    </button>
-                </div>
-
-                <div id="section-login" class="animate-entry delay-100">
-                    <h1 class="font-display text-3xl font-bold mb-2">Welcome Back</h1>
-                    <p class="text-zinc-400 mb-8">Enter your credentials to access the system.</p>
-
-                    <form onsubmit="handleLogin(event)" class="space-y-5">
-                        <div class="group">
-                            <label class="block text-xs font-semibold text-zinc-500 mb-2 uppercase tracking-wider">Username</label>
-                            <div class="relative">
-                                <i class="fa-solid fa-user absolute left-4 top-3.5 text-zinc-500 group-focus-within:text-ai transition-colors"></i>
-                                <input type="text" id="login-username" required 
-                                    class="w-full bg-zinc-900/50 border border-zinc-700 text-white rounded-xl py-3 pl-11 pr-4 focus:outline-none focus:border-ai focus:ring-1 focus:ring-ai/50 transition-all placeholder:text-zinc-600"
-                                    placeholder="Enter username">
-                            </div>
-                        </div>
-
-                        <div class="group">
-                            <label class="block text-xs font-semibold text-zinc-500 mb-2 uppercase tracking-wider">Password</label>
-                            <div class="relative">
-                                <i class="fa-solid fa-lock absolute left-4 top-3.5 text-zinc-500 group-focus-within:text-ai transition-colors"></i>
-                                <input type="password" id="login-password" required 
-                                    class="w-full bg-zinc-900/50 border border-zinc-700 text-white rounded-xl py-3 pl-11 pr-4 focus:outline-none focus:border-ai focus:ring-1 focus:ring-ai/50 transition-all placeholder:text-zinc-600"
-                                    placeholder="••••••••">
-                            </div>
-                        </div>
-
-                        <button type="submit" class="w-full bg-gradient-to-r from-ai to-secondary py-3.5 rounded-xl text-white font-bold shadow-lg hover-spring relative overflow-hidden group mt-4">
-                            <span class="relative z-10 flex items-center justify-center gap-2">
-                                Sign In <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
-                            </span>
-                            <div class="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
-                        </button>
-                    </form>
-                </div>
-
-                <div id="section-register" class="hidden animate-entry delay-100">
-                    <h1 class="font-display text-3xl font-bold mb-2">Create Account</h1>
-                    <p class="text-zinc-400 mb-8">Join the network securely.</p>
-
-                    <form onsubmit="handleRegister(event)" class="space-y-5">
-                        <div class="group">
-                            <label class="block text-xs font-semibold text-zinc-500 mb-2 uppercase tracking-wider">Choose Username</label>
-                            <div class="relative">
-                                <i class="fa-solid fa-user-plus absolute left-4 top-3.5 text-zinc-500 group-focus-within:text-secondary transition-colors"></i>
-                                <input type="text" id="reg-username" required 
-                                    class="w-full bg-zinc-900/50 border border-zinc-700 text-white rounded-xl py-3 pl-11 pr-4 focus:outline-none focus:border-secondary focus:ring-1 focus:ring-secondary/50 transition-all placeholder:text-zinc-600"
-                                    placeholder="New username">
-                            </div>
-                        </div>
-
-                        <div class="group">
-                            <label class="block text-xs font-semibold text-zinc-500 mb-2 uppercase tracking-wider">Set Password</label>
-                            <div class="relative">
-                                <i class="fa-solid fa-key absolute left-4 top-3.5 text-zinc-500 group-focus-within:text-secondary transition-colors"></i>
-                                <input type="password" id="reg-password" required 
-                                    class="w-full bg-zinc-900/50 border border-zinc-700 text-white rounded-xl py-3 pl-11 pr-4 focus:outline-none focus:border-secondary focus:ring-1 focus:ring-secondary/50 transition-all placeholder:text-zinc-600"
-                                    placeholder="••••••••">
-                            </div>
-                        </div>
-
-                        <button type="submit" class="w-full bg-zinc-800 hover:bg-zinc-700 py-3.5 rounded-xl text-white font-bold shadow-lg hover-spring relative overflow-hidden group mt-4 border border-zinc-700">
-                            <span class="relative z-10 flex items-center justify-center gap-2">
-                                Create Account <i class="fa-solid fa-user-shield"></i>
-                            </span>
-                        </button>
-                    </form>
-                </div>
-
-            </div>
-        </div>
-    </main>
-
-    <main id="dashboard-container" class="relative z-10 w-full max-w-6xl p-6 hidden animate-entry">
-        <header class="glass-panel rounded-2xl p-6 mb-6 flex justify-between items-center">
-            <div class="flex items-center gap-4">
-                <div class="w-12 h-12 rounded-full bg-gradient-to-br from-ai to-secondary flex items-center justify-center text-xl shadow-lg shadow-ai/20">
-                    <i class="fa-solid fa-user-astronaut"></i>
-                </div>
-                <div>
-                    <h2 class="font-display text-xl font-bold">Welcome, <span id="user-display" class="text-ai">User</span></h2>
-                    <p class="text-xs text-zinc-400 flex items-center gap-2">
-                        <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span> System Online
-                    </p>
-                </div>
-            </div>
-            <button onclick="handleLogout()" class="bg-zinc-800/80 hover:bg-red-500/10 hover:text-red-400 text-zinc-400 px-4 py-2 rounded-lg border border-white/5 transition-all text-sm font-medium flex items-center gap-2">
-                <i class="fa-solid fa-power-off"></i> Logout
-            </button>
-        </header>
-
-        <div class="grid md:grid-cols-3 gap-6">
-            <div class="glass-panel p-6 rounded-2xl hover-spring cursor-pointer group">
-                <div class="flex justify-between items-start mb-4">
-                    <div class="p-3 rounded-lg bg-blue-500/10 text-blue-400 group-hover:bg-blue-500 group-hover:text-white transition-colors">
-                        <i class="fa-solid fa-server text-xl"></i>
-                    </div>
-                    <span class="text-xs font-mono text-zinc-500">API.LATENCY</span>
-                </div>
-                <div class="text-3xl font-display font-bold mb-1">24<span class="text-sm text-zinc-500 ml-1">ms</span></div>
-                <p class="text-zinc-400 text-sm">Connection stable</p>
-            </div>
-
-            <div class="glass-panel p-6 rounded-2xl hover-spring cursor-pointer group">
-                <div class="flex justify-between items-start mb-4">
-                    <div class="p-3 rounded-lg bg-purple-500/10 text-purple-400 group-hover:bg-purple-500 group-hover:text-white transition-colors">
-                        <i class="fa-solid fa-database text-xl"></i>
-                    </div>
-                    <span class="text-xs font-mono text-zinc-500">DB.STATUS</span>
-                </div>
-                <div class="text-3xl font-display font-bold mb-1">Active</div>
-                <p class="text-zinc-400 text-sm">Synchronized</p>
-            </div>
-
-            <div class="glass-panel p-6 rounded-2xl hover-spring cursor-pointer group">
-                <div class="flex justify-between items-start mb-4">
-                    <div class="p-3 rounded-lg bg-emerald-500/10 text-emerald-400 group-hover:bg-emerald-500 group-hover:text-white transition-colors">
-                        <i class="fa-solid fa-shield-halved text-xl"></i>
-                    </div>
-                    <span class="text-xs font-mono text-zinc-500">AUTH.TOKEN</span>
-                </div>
-                <div class="text-3xl font-display font-bold mb-1">Valid</div>
-                <p class="text-zinc-400 text-sm">Session secure</p>
-            </div>
-        </div>
+    <main class="relative z-10 w-full max-w-4xl h-[600px] glass-panel rounded-3xl shadow-2xl flex overflow-hidden animate-[fadeIn_0.5s_ease-out]">
         
-        <div class="mt-6 glass-panel p-6 rounded-2xl">
-            <h3 class="font-display font-bold mb-4 text-zinc-300">System Logs</h3>
-            <div class="bg-black/40 rounded-lg p-4 font-mono text-xs text-zinc-500 space-y-2 h-32 overflow-y-auto" id="system-logs">
-                <div>> Initializing connection...</div>
-                <div>> Connected to https://hackaton-project-lptu.onrender.com</div>
-                <div class="text-green-500">> Session verified.</div>
+        <div class="hidden md:flex w-1/2 bg-gradient-to-br from-zinc-900 to-black border-r border-white/5 flex-col items-center justify-center p-12 relative overflow-hidden group">
+            
+            <div class="relative w-48 h-48 flex items-center justify-center mb-8">
+                <div class="absolute inset-0 bg-gradient-to-r from-ai-glow to-secondary rounded-full blur-3xl opacity-20 group-hover:opacity-30 transition duration-700"></div>
+                <div class="relative z-10 text-6xl text-transparent bg-clip-text bg-gradient-to-br from-white to-gray-400 drop-shadow-[0_0_15px_rgba(217,70,239,0.3)]">
+                    <i class="fa-solid fa-brain"></i>
+                </div>
+                <div class="absolute inset-0 border border-white/5 rounded-full animate-spin-slow"></div>
+                <div class="absolute inset-4 border border-white/5 rounded-full animate-reverse-spin"></div>
+            </div>
+
+            <div class="text-center z-10">
+                <h1 class="font-display text-3xl font-bold tracking-tight mb-2">Neural<span class="text-ai-glow">Gate</span></h1>
+                <p class="text-zinc-500 text-sm">Secure Access Intelligence</p>
+            </div>
+            
+            <div class="absolute bottom-6 text-[10px] text-zinc-700 font-mono tracking-widest">
+                SYSTEM_READY // V2.4.0
             </div>
         </div>
+
+        <div class="w-full md:w-1/2 p-8 md:p-12 flex flex-col justify-center bg-zinc-900/30 backdrop-blur-sm">
+            
+            <div class="mb-10">
+                <h2 class="font-display text-2xl font-bold mb-2">Welcome Back</h2>
+                <p class="text-zinc-400 text-sm">Enter your credentials to access the Neural Network.</p>
+            </div>
+
+            <form id="login-form" onsubmit="handleLogin(event)" class="space-y-6">
+                
+                <div class="group">
+                    <label class="block text-xs font-semibold text-zinc-500 mb-2 uppercase tracking-wider">Identity</label>
+                    <div class="relative">
+                        <i class="fa-solid fa-user absolute left-4 top-1/2 -translate-y-1/2 text-zinc-500 group-focus-within:text-ai-glow transition-colors"></i>
+                        <input type="text" id="username" required 
+                            class="glass-input w-full rounded-xl py-3.5 pl-11 pr-4 text-sm placeholder-zinc-600"
+                            placeholder="username">
+                    </div>
+                </div>
+
+                <div class="group">
+                    <label class="block text-xs font-semibold text-zinc-500 mb-2 uppercase tracking-wider">Passcode</label>
+                    <div class="relative">
+                        <i class="fa-solid fa-lock absolute left-4 top-1/2 -translate-y-1/2 text-zinc-500 group-focus-within:text-ai-glow transition-colors"></i>
+                        <input type="password" id="password" required 
+                            class="glass-input w-full rounded-xl py-3.5 pl-11 pr-4 text-sm placeholder-zinc-600"
+                            placeholder="••••••••">
+                    </div>
+                </div>
+
+                <button type="submit" id="btn-login" class="w-full bg-gradient-to-r from-ai-glow to-secondary py-3.5 rounded-xl text-white font-bold text-sm shadow-lg hover-spring relative overflow-hidden group mt-4">
+                    <span class="relative z-10 flex items-center justify-center gap-2">
+                        Initialize Session <i class="fa-solid fa-arrow-right-to-bracket group-hover:translate-x-1 transition-transform"></i>
+                    </span>
+                    <div class="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
+                </button>
+            </form>
+        </div>
     </main>
+
+    <div id="toast-container" class="fixed bottom-6 right-6 z-50 toast-hidden">
+        <div class="glass-panel bg-zinc-900 border-l-4 border-red-500 px-6 py-4 rounded-r-xl shadow-2xl flex items-center gap-4">
+            <div class="bg-red-500/20 text-red-500 rounded-full w-8 h-8 flex items-center justify-center">
+                <i class="fa-solid fa-triangle-exclamation text-sm"></i>
+            </div>
+            <div>
+                <h4 class="text-white font-bold text-sm">Access Denied</h4>
+                <p class="text-zinc-400 text-xs">Invalid credentials provided.</p>
+            </div>
+        </div>
+    </div>
 
     <script>
-        // 1. CONFIGURATION
-        const API_BASE_URL = "https://hackaton-project-lptu.onrender.com";
+        // CONFIG
+        const API_BASE_URL = "http://localhost:8000";
 
-        // 2. STATE & UTILS
-        const log = (msg, type='neutral') => {
-            const container = document.getElementById('system-logs');
-            const div = document.createElement('div');
-            div.innerText = `> ${msg}`;
-            if(type === 'success') div.className = 'text-green-500';
-            if(type === 'error') div.className = 'text-red-500';
-            container.appendChild(div);
-            container.scrollTop = container.scrollHeight;
-            console.log(msg);
-        };
-
-        // 3. PAGE LOAD LOGIC (Session Persistence)
-        document.addEventListener('DOMContentLoaded', async () => {
-            const token = localStorage.getItem('authToken');
-            
-            if (token) {
-                // UI: Show loading state if needed
-                try {
-                    const response = await fetch(`${API_BASE_URL}/verify_token`, {
-                        method: 'GET',
-                        headers: { 
-                            'Authorization': token,
-                            'Content-Type': 'application/json'
-                        }
-                    });
-
-                    if (response.ok) {
-                        const currentUser = localStorage.getItem('currentUser') || 'User';
-                        showDashboard(currentUser);
-                        log('Auto-login successful', 'success');
-                    } else {
-                        // Token invalid
-                        throw new Error('Token invalid');
-                    }
-                } catch (error) {
-                    // Fallback or Invalid Token
-                    console.warn("Session check failed:", error);
-                    handleLogout(); // Clear bad data
-                    // If network error, we could stay on login or do mock mode, 
-                    // but for verify_token usually safer to just show login.
-                }
-            }
-        });
-
-        // 4. UI FUNCTIONS
-        function switchTab(tab) {
-            const loginBtn = document.getElementById('tab-login');
-            const regBtn = document.getElementById('tab-register');
-            const loginSection = document.getElementById('section-login');
-            const regSection = document.getElementById('section-register');
-
-            if (tab === 'login') {
-                loginBtn.className = "px-6 py-2 rounded-lg text-sm font-medium transition-all duration-300 bg-zinc-800 text-white shadow-lg border border-white/10";
-                regBtn.className = "px-6 py-2 rounded-lg text-sm font-medium text-zinc-400 hover:text-white transition-all duration-300";
-                loginSection.classList.remove('hidden');
-                regSection.classList.add('hidden');
-            } else {
-                regBtn.className = "px-6 py-2 rounded-lg text-sm font-medium transition-all duration-300 bg-zinc-800 text-white shadow-lg border border-white/10";
-                loginBtn.className = "px-6 py-2 rounded-lg text-sm font-medium text-zinc-400 hover:text-white transition-all duration-300";
-                regSection.classList.remove('hidden');
-                loginSection.classList.add('hidden');
-            }
-        }
-
-        function showDashboard(username) {
-            document.getElementById('auth-container').classList.add('hidden');
-            document.getElementById('dashboard-container').classList.remove('hidden');
-            document.getElementById('user-display').innerText = username;
-        }
-
-        // 5. API HANDLERS
-        
-        // A. REGISTER
-        async function handleRegister(e) {
-            e.preventDefault();
-            const username = document.getElementById('reg-username').value;
-            const password = document.getElementById('reg-password').value;
-            const btn = e.target.querySelector('button');
-            const originalText = btn.innerHTML;
-
-            btn.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin"></i> Processing`;
-            btn.disabled = true;
-
-            try {
-                const response = await fetch(`${API_BASE_URL}/register`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ username, password })
-                });
-
-                if (response.ok) {
-                    alert('Account Created! Please Login.');
-                    switchTab('login');
-                    document.getElementById('login-username').value = username;
-                } else {
-                    const data = await response.json();
-                    alert('Error: ' + (data.detail || 'Registration failed'));
-                }
-            } catch (error) {
-                console.error(error);
-                alert('Network Error. (Dev Mode: API might be sleeping)');
-            } finally {
-                btn.innerHTML = originalText;
-                btn.disabled = false;
-            }
-        }
-
-        // B. LOGIN
+        // LOGIC
         async function handleLogin(e) {
             e.preventDefault();
-            const username = document.getElementById('login-username').value;
-            const password = document.getElementById('login-password').value;
-            const btn = e.target.querySelector('button');
-            const originalText = btn.innerHTML;
+            
+            const usernameInput = document.getElementById('username');
+            const passwordInput = document.getElementById('password');
+            const btn = document.getElementById('btn-login');
+            const originalContent = btn.innerHTML;
 
-            btn.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin"></i> Authenticating`;
+            // 1. UI Loading
+            btn.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin"></i> Authenticating...`;
             btn.disabled = true;
 
             try {
+                // 2. API Call
                 const response = await fetch(`${API_BASE_URL}/login`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ username, password })
+                    body: JSON.stringify({
+                        username: usernameInput.value,
+                        password: passwordInput.value
+                    })
                 });
 
                 if (response.ok) {
                     const data = await response.json();
                     
-                    // 1. Receive JSON: { "token": "...", "username": "..." }
-                    // 2. Save to localStorage
-                    localStorage.setItem('authToken', data.token);
-                    localStorage.setItem('currentUser', data.username);
+                    // 3. Save Session
+                    localStorage.setItem('token', data.token);
+                    localStorage.setItem('username', data.username);
                     
-                    // 3. UI Transition
-                    showDashboard(data.username);
-                    log('Login successful', 'success');
-                } else {
-                    alert('Invalid credentials');
-                }
-            } catch (error) {
-                console.warn('Network Error - Triggering Mock Fallback');
-                
-                // ERROR HANDLING / MOCK FALLBACK
-                alert('Dev Mode: API Unreachable. Logging in anonymously.');
-                
-                const mockToken = "mock_token_" + Date.now();
-                localStorage.setItem('authToken', mockToken);
-                localStorage.setItem('currentUser', username);
-                
-                showDashboard(username);
-                log('Mock Login Activated (Network Error)', 'error');
-            } finally {
-                btn.innerHTML = originalText;
-                btn.disabled = false;
-            }
-        }
-
-        // D. LOGOUT
-        async function handleLogout() {
-            const token = localStorage.getItem('authToken');
-            
-            // UI Cleanup first for speed
-            localStorage.removeItem('authToken');
-            localStorage.removeItem('currentUser');
-            document.getElementById('dashboard-container').classList.add('hidden');
-            document.getElementById('auth-container').classList.remove('hidden');
-            switchTab('login');
-
-            // API Call
-            try {
-                await fetch(`${API_BASE_URL}/logout`, {
-                    method: 'POST',
-                    headers: { 
-                        'Authorization': token,
-                        'Content-Type': 'application/json' 
+                    // Determine Role (Mock logic for hackathon if backend doesn't send role yet)
+                    // If username contains "admin", they are admin. Otherwise user.
+                    let role = data.role;
+                    if (!role) {
+                        role = data.username.toLowerCase().includes('admin') ? 'admin' : 'user';
                     }
-                });
-            } catch (e) {
-                console.log("Logout API failed (token likely invalid already)");
+                    localStorage.setItem('role', role);
+
+                    // 4. Redirect
+                    if (role === 'admin') window.location.href = 'admin.html';
+                    else window.location.href = 'dashboard.html';
+
+                } else {
+                    throw new Error('Invalid credentials');
+                }
+
+            } catch (error) {
+                console.error("Login Error:", error);
+                showToast();
+                
+                // Reset UI
+                btn.innerHTML = originalContent;
+                btn.disabled = false;
+                passwordInput.value = '';
             }
         }
+
+        function showToast() {
+            const t = document.getElementById('toast-container');
+            t.classList.remove('toast-hidden');
+            t.classList.add('toast-visible');
+            setTimeout(() => {
+                t.classList.remove('toast-visible');
+                t.classList.add('toast-hidden');
+            }, 3000);
+        }
+
+        // Auto-Redirect check
+        document.addEventListener('DOMContentLoaded', () => {
+            const token = localStorage.getItem('token');
+            const role = localStorage.getItem('role');
+            if(token && role) {
+                if (role === 'admin') window.location.href = 'admin.html';
+                else window.location.href = 'dashboard.html';
+            }
+        });
     </script>
 </body>
 </html>
