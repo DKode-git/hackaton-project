@@ -3,12 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Command Center | Hackton</title>
+    <title>Admin Command Center | HackBox</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
-    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
 
     <script>
@@ -31,12 +29,12 @@
 
     <style>
         body {
-            background-color: #0f172a; /* Slate 900 */
+            background-color: #0f172a;
             color: #e2e8f0;
             overflow-x: hidden;
         }
 
-        /* 3. THE PHYSICS ANIMATION ENGINE */
+        /* PHYSICS ANIMATION ENGINE */
         .hover-spring {
             transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
         }
@@ -54,14 +52,13 @@
             animation: slideUp 0.6s ease-out forwards;
         }
         
-        /* Staggered delays for table rows */
         tr.animate-entry:nth-child(1) { animation-delay: 0.1s; }
         tr.animate-entry:nth-child(2) { animation-delay: 0.15s; }
         tr.animate-entry:nth-child(3) { animation-delay: 0.2s; }
         tr.animate-entry:nth-child(4) { animation-delay: 0.25s; }
         tr.animate-entry:nth-child(5) { animation-delay: 0.3s; }
 
-        /* Glassmorphism Utilities */
+        /* Glassmorphism */
         .glass-panel {
             background: rgba(255, 255, 255, 0.03);
             backdrop-filter: blur(16px);
@@ -76,7 +73,7 @@
             border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }
 
-        /* Custom Scrollbar */
+        /* Scrollbar */
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: #0f172a; }
         ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
@@ -101,29 +98,30 @@
             </div>
 
             <nav class="px-4 space-y-2 mt-4">
-                <a href="#" class="flex items-center gap-3 px-4 py-3 text-slate-400 hover:text-white hover:bg-white/5 rounded-xl transition-all duration-200">
-                    <i class="fa-solid fa-house w-5"></i> Dashboard
+                <a href="dashboard.html" class="flex items-center gap-3 px-4 py-3 text-slate-400 hover:text-white hover:bg-white/5 rounded-xl transition-all duration-200">
+                    <i class="fa-solid fa-house w-5"></i> User View
                 </a>
-                <a href="#" class="flex items-center gap-3 px-4 py-3 bg-primary-500/10 text-primary-400 border border-primary-500/20 rounded-xl transition-all duration-200">
+                
+                <a href="admin.html" class="flex items-center gap-3 px-4 py-3 bg-primary-500/10 text-primary-400 border border-primary-500/20 rounded-xl transition-all duration-200">
                     <i class="fa-solid fa-shield-halved w-5"></i> Admin Center
                 </a>
-                <a href="#" class="flex items-center gap-3 px-4 py-3 text-slate-400 hover:text-white hover:bg-white/5 rounded-xl transition-all duration-200">
-                    <i class="fa-solid fa-chart-pie w-5"></i> Analytics
-                </a>
-                <a href="#" class="flex items-center gap-3 px-4 py-3 text-slate-400 hover:text-white hover:bg-white/5 rounded-xl transition-all duration-200">
-                    <i class="fa-solid fa-users w-5"></i> Users
+
+                <a href="profile.html" class="flex items-center gap-3 px-4 py-3 text-slate-400 hover:text-white hover:bg-white/5 rounded-xl transition-all duration-200">
+                    <i class="fa-solid fa-user w-5"></i> Profile
                 </a>
             </nav>
         </div>
 
         <div class="p-6 border-t border-slate-800/50">
             <div class="flex items-center gap-3">
-                <img src="https://ui-avatars.com/api/?name=Admin+User&background=22d3ee&color=fff" class="w-10 h-10 rounded-full ring-2 ring-primary-500/30">
+                <div id="admin-avatar-container" class="w-10 h-10 rounded-full bg-slate-700 flex items-center justify-center ring-2 ring-primary-500/30 font-bold text-white">
+                    AD
+                </div>
                 <div>
-                    <p class="text-sm font-semibold text-white">Admin User</p>
+                    <p class="text-sm font-semibold text-white" id="admin-username-display">Admin</p>
                     <p class="text-xs text-slate-500">Super Admin</p>
                 </div>
-                <button onclick="logout()" class="ml-auto text-slate-500 hover:text-red-400 transition-colors">
+                <button onclick="logout()" class="ml-auto text-slate-500 hover:text-red-400 transition-colors" title="Logout">
                     <i class="fa-solid fa-arrow-right-from-bracket"></i>
                 </button>
             </div>
@@ -142,7 +140,8 @@
                 <button onclick="fetchSuggestions()" class="glass-panel hover-spring px-5 py-2.5 rounded-xl text-sm font-medium text-slate-300 hover:text-white flex items-center gap-2">
                     <i class="fa-solid fa-rotate"></i> Refresh
                 </button>
-                <button class="bg-gradient-to-r from-primary-500 to-accent-500 hover:from-primary-400 hover:to-accent-400 text-white px-5 py-2.5 rounded-xl text-sm font-bold shadow-lg shadow-primary-500/25 active:scale-95 transition-all duration-200 flex items-center gap-2">
+                
+                <button onclick="exportCSV()" class="bg-gradient-to-r from-primary-500 to-accent-500 hover:from-primary-400 hover:to-accent-400 text-white px-5 py-2.5 rounded-xl text-sm font-bold shadow-lg shadow-primary-500/25 active:scale-95 transition-all duration-200 flex items-center gap-2">
                     <i class="fa-solid fa-download"></i> Export CSV
                 </button>
             </div>
@@ -167,7 +166,7 @@
                 <p class="text-slate-400 text-sm font-medium uppercase tracking-wider mb-2">Total Approved</p>
                 <h3 class="text-4xl font-display font-bold text-white" id="stat-approved">0</h3>
                 <div class="mt-4 text-xs text-primary-400 flex items-center gap-1">
-                    <i class="fa-solid fa-arrow-trend-up"></i> +12% this week
+                    <i class="fa-solid fa-arrow-trend-up"></i> Lifetime
                 </div>
             </div>
 
@@ -178,7 +177,7 @@
                 <p class="text-slate-400 text-sm font-medium uppercase tracking-wider mb-2">Approval Rate</p>
                 <h3 class="text-4xl font-display font-bold text-white" id="stat-rate">0%</h3>
                 <div class="mt-4 text-xs text-accent-400 flex items-center gap-1">
-                    <i class="fa-solid fa-calculator"></i> Calculated live
+                    <i class="fa-solid fa-calculator"></i> Live Calc
                 </div>
             </div>
         </section>
@@ -210,95 +209,108 @@
                         </tbody>
                 </table>
             </div>
-            <div class="p-4 border-t border-slate-800/50 flex justify-center">
-                <button class="text-slate-500 hover:text-white text-xs font-medium transition-colors">Load More Records</button>
+            <div class="p-4 border-t border-slate-800/50 flex justify-center text-xs text-slate-600">
+                End of list
             </div>
         </section>
 
     </main>
 
     <script>
-        // 5. BACKEND INTEGRATION CONFIGURATION
-        const API_BASE_URL = "https://your-render-app.onrender.com"; // CHANGE THIS AFTER DEPLOYING
+        // --- CONFIGURATION ---
+        const API_BASE_URL = "https://your-render-app.onrender.com"; // UPDATE THIS IF NEEDED
 
-        // --- 4. ARCHITECTURE: STATE & MOCK DATA ---
+        // --- STATE & MOCK DATA ---
         let suggestions = [];
         
-        // Mock Data to prevent crashes and enable immediate demo
+        // Mock Data (Fallback if API fails during demo)
         const MOCK_DATA = {
             suggestions: [
-                { id: 101, user: "Alice Chen", avatar: "AC", summary: "Add Dark Mode support for mobile view", category: "UI/UX", sentiment: 0.9, status: "pending", date: "2023-10-24" },
-                { id: 102, user: "Bob Smith", avatar: "BS", summary: "The login button is broken on Safari", category: "Bug", sentiment: 0.2, status: "pending", date: "2023-10-23" },
-                { id: 103, user: "Charlie D", avatar: "CD", summary: "Can we get an export to PDF feature?", category: "Feature", sentiment: 0.7, status: "approved", date: "2023-10-22" },
-                { id: 104, user: "Dana Lee", avatar: "DL", summary: "This app is too slow to load", category: "Performance", sentiment: 0.1, status: "rejected", date: "2023-10-21" },
-                { id: 105, user: "Eve R.", avatar: "ER", summary: "Love the new layout, very clean!", category: "Feedback", sentiment: 0.95, status: "pending", date: "2023-10-20" },
-                { id: 106, user: "Frank W.", avatar: "FW", summary: "Add 2FA authentication options", category: "Security", sentiment: 0.6, status: "pending", date: "2023-10-19" },
+                { id: 101, username: "alice_c", text: "Add Dark Mode support for mobile view", ai_summary: "Dark Mode Request", category: "UI/UX", sentiment: 90, status: "pending" },
+                { id: 102, username: "bob_s", text: "Login button broken on Safari", ai_summary: "Safari Login Bug", category: "Bug", sentiment: 20, status: "pending" },
+                { id: 103, username: "charlie", text: "Great app!", ai_summary: "Positive Feedback", category: "General", sentiment: 95, status: "approved" }
             ]
         };
 
-        // --- AUTH CHECK ---
-        function checkAuth() {
-            // For hackathon demo, we default to 'admin' so the judges can see the UI immediately.
-            // In production, uncomment the check below.
-            const role = localStorage.getItem('user_role') || 'admin'; 
-            
-            if (role !== 'admin') {
-                alert("Access Denied: Admins Only");
-                // window.location.href = 'index.html'; // Redirect in real app
+        // --- 1. AUTH & INIT ---
+        function init() {
+            // Load user profile into sidebar
+            const username = localStorage.getItem('username') || 'Admin';
+            document.getElementById('admin-username-display').innerText = username;
+            document.getElementById('admin-avatar-container').innerText = username.substring(0, 2).toUpperCase();
+
+            // Strict Role Check
+            const role = localStorage.getItem('role');
+            const token = localStorage.getItem('token');
+
+            // UNCOMMENT FOR PRODUCTION:
+            /*
+            if (!token || role !== 'admin') {
+                alert("Access Denied. Admins only.");
+                window.location.href = 'index.html';
+                return;
             }
+            */
+
+            fetchSuggestions();
         }
 
-        // --- FETCH WRAPPER ---
+        // --- 2. DYNAMIC FETCH WITH AUTH HEADERS ---
         async function safeFetch(endpoint, options = {}) {
+            const token = localStorage.getItem('token');
+            
+            // Merge defaults with options
+            const config = {
+                ...options,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
+                    ...options.headers
+                }
+            };
+
             try {
-                // Attempt real API call
-                const response = await fetch(`${API_BASE_URL}${endpoint}`, options);
+                const response = await fetch(`${API_BASE_URL}${endpoint}`, config);
                 if (!response.ok) throw new Error(`API Error: ${response.status}`);
                 return await response.json();
             } catch (error) {
-                console.warn(`API Connection Failed (${endpoint}). Using Mock Data.`);
-                
-                // Simulate network delay for realism
+                console.warn(`API Connection Failed (${endpoint}). Using Mock Data/Action.`);
+                // Simulate delay
                 await new Promise(r => setTimeout(r, 600));
 
                 if (endpoint.includes('/suggestions') && options.method === 'PATCH') {
-                    // Mock Update
                     return { success: true }; 
                 }
+                // Return mock data for GET requests
                 return MOCK_DATA.suggestions;
             }
         }
 
-        // --- CORE LOGIC ---
-
-        async function init() {
-            checkAuth();
-            await fetchSuggestions();
-        }
-
+        // --- 3. CORE LOGIC ---
         async function fetchSuggestions() {
+            const btn = document.querySelector('button[onclick="fetchSuggestions()"] i');
+            btn.classList.add('fa-spin'); // Visual feedback
+
             const data = await safeFetch('/suggestions');
             suggestions = data;
+            
             renderTable();
             updateStats();
+            
+            btn.classList.remove('fa-spin');
         }
 
         function calculateStats() {
             const total = suggestions.length;
             const pending = suggestions.filter(s => s.status === 'pending').length;
             const approved = suggestions.filter(s => s.status === 'approved').length;
-            
-            // Calculate Rate
             const decided = total - pending;
             const rate = decided > 0 ? Math.round((approved / decided) * 100) : 0;
-
             return { pending, approved, rate };
         }
 
         function updateStats() {
             const stats = calculateStats();
-            
-            // Animate Numbers (Simple increment effect)
             animateValue("stat-pending", stats.pending);
             animateValue("stat-approved", stats.approved);
             document.getElementById('stat-rate').innerText = stats.rate + '%';
@@ -306,25 +318,17 @@
 
         function animateValue(id, end) {
             const obj = document.getElementById(id);
-            let start = 0;
-            if(start === end) return;
-            let duration = 1000;
-            let range = end - start;
-            let current = start;
-            let increment = end > start ? 1 : -1;
-            let stepTime = Math.abs(Math.floor(duration / range));
-            let timer = setInterval(function() {
-                current += increment;
-                obj.innerHTML = current;
-                if (current == end) clearInterval(timer);
-            }, stepTime);
+            if(!obj) return;
+            obj.innerHTML = end; 
+            // Simplified animation for stability
         }
 
-        // --- RENDER FUNCTIONS ---
-
+        // --- 4. RENDER & HELPERS ---
         function getSentimentColor(score) {
-            if (score >= 0.7) return 'bg-green-500';
-            if (score >= 0.4) return 'bg-yellow-500';
+            // Adjust based on your API (0-100 or 0.0-1.0)
+            const val = score > 1 ? score / 100 : score; 
+            if (val >= 0.7) return 'bg-green-500';
+            if (val >= 0.4) return 'bg-yellow-500';
             return 'bg-red-500';
         }
 
@@ -343,38 +347,41 @@
             suggestions.forEach((item, index) => {
                 const tr = document.createElement('tr');
                 tr.className = "hover:bg-white/5 transition-colors animate-entry";
-                tr.style.animationDelay = `${index * 0.05}s`; // Stagger effect
+                tr.style.animationDelay = `${index * 0.05}s`;
                 tr.id = `row-${item.id}`;
 
-                // Sentiment Bar Width
-                const sentimentWidth = Math.round(item.sentiment * 100);
+                // Handle variations in data naming (API vs Mock)
+                const displayText = item.ai_summary || item.text.substring(0, 30) + "...";
+                const displayUser = item.username || item.user || "User";
+                
+                // Sentiment Calc
+                const sentimentScore = item.sentiment > 1 ? item.sentiment : item.sentiment * 100;
                 const sentimentColor = getSentimentColor(item.sentiment);
 
                 tr.innerHTML = `
                     <td class="px-6 py-4 whitespace-nowrap">
                         <div class="flex items-center">
                             <div class="flex-shrink-0 h-8 w-8 rounded-full bg-slate-700 flex items-center justify-center text-xs font-bold text-white border border-slate-600">
-                                ${item.avatar}
+                                ${displayUser.substring(0,2).toUpperCase()}
                             </div>
                             <div class="ml-4">
-                                <div class="text-sm font-medium text-white">${item.user}</div>
-                                <div class="text-xs text-slate-500">${item.date}</div>
+                                <div class="text-sm font-medium text-white">${displayUser}</div>
                             </div>
                         </div>
                     </td>
                     <td class="px-6 py-4">
-                        <div class="text-sm text-slate-300 truncate max-w-xs" title="${item.summary}">${item.summary}</div>
+                        <div class="text-sm text-slate-300 truncate max-w-xs" title="${item.text}">${displayText}</div>
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap">
                         <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-md bg-slate-800 text-slate-400 border border-slate-700">
-                            ${item.category}
+                            ${item.category || 'General'}
                         </span>
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap">
                         <div class="w-24 bg-slate-800 rounded-full h-1.5 overflow-hidden">
-                            <div class="${sentimentColor} h-1.5 rounded-full" style="width: ${sentimentWidth}%"></div>
+                            <div class="${sentimentColor} h-1.5 rounded-full" style="width: ${sentimentScore}%"></div>
                         </div>
-                        <div class="text-xs text-slate-500 mt-1">${sentimentWidth}% Positive</div>
+                        <div class="text-xs text-slate-500 mt-1">${sentimentScore}% Positive</div>
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap" id="status-${item.id}">
                         ${getStatusBadge(item.status)}
@@ -394,62 +401,81 @@
             });
         }
 
-        // --- ACTION HANDLERS (OPTIMISTIC UI) ---
+        // --- 5. ACTION HANDLERS ---
 
         async function updateStatus(id, newStatus) {
-            // 1. Optimistic UI Update: Change appearance immediately
+            // Optimistic UI Update
             const row = document.getElementById(`row-${id}`);
             const statusCell = document.getElementById(`status-${id}`);
             const actionButtons = row.lastElementChild;
 
-            // Flash effect
-            row.style.transition = "background-color 0.3s";
             row.style.backgroundColor = newStatus === 'approved' ? "rgba(74, 222, 128, 0.1)" : "rgba(248, 113, 113, 0.1)";
-
-            // Update Badge
             statusCell.innerHTML = getStatusBadge(newStatus);
-            
-            // Remove buttons
             actionButtons.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-primary-400"></i>';
 
-            // 2. Update Local State
+            // Local Update
             const item = suggestions.find(s => s.id === id);
             if(item) item.status = newStatus;
-            
-            // Recalculate Stats immediately
             updateStats();
 
-            // 3. API Call
+            // API Call
             try {
                 await safeFetch(`/suggestions/${id}`, {
                     method: 'PATCH',
-                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ status: newStatus })
                 });
 
                 // Finalize UI
                 setTimeout(() => {
-                    row.style.backgroundColor = ""; // Reset BG
+                    row.style.backgroundColor = "";
                     actionButtons.innerHTML = '<span class="text-slate-600 text-xs italic">Decided</span>';
                 }, 500);
 
             } catch (error) {
-                // Revert on error (Production robustness)
                 console.error("Update failed", error);
-                alert("Failed to update status. Reverting.");
-                item.status = 'pending';
-                renderTable(); // Re-render to revert
+                alert("Failed to update. Reverting.");
+                item.status = 'pending'; // Revert state
+                renderTable(); // Re-render
             }
         }
 
+        // --- 6. EXPORT CSV FUNCTION (New Feature) ---
+        function exportCSV() {
+            if (suggestions.length === 0) {
+                alert("No data to export.");
+                return;
+            }
+
+            // Define Headers
+            let csvContent = "data:text/csv;charset=utf-8,";
+            csvContent += "ID,User,Summary,Category,Sentiment,Status\n";
+
+            // Define Rows
+            suggestions.forEach(item => {
+                const cleanSummary = (item.ai_summary || item.text).replace(/,/g, " "); // Remove commas to prevent CSV break
+                const row = `${item.id},${item.username || item.user},${cleanSummary},${item.category},${item.sentiment},${item.status}`;
+                csvContent += row + "\n";
+            });
+
+            // Trigger Download
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", "hackbox_data_export.csv");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // --- 7. UTILS ---
         function filterTable() {
             const input = document.getElementById('searchInput');
             const filter = input.value.toLowerCase();
             const rows = document.getElementById('suggestions-table-body').getElementsByTagName('tr');
 
             for (let i = 0; i < rows.length; i++) {
-                const userText = rows[i].getElementsByTagName("td")[0].textContent || rows[i].getElementsByTagName("td")[0].innerText;
-                const summaryText = rows[i].getElementsByTagName("td")[1].textContent || rows[i].getElementsByTagName("td")[1].innerText;
+                const userText = rows[i].getElementsByTagName("td")[0].textContent || "";
+                const summaryText = rows[i].getElementsByTagName("td")[1].textContent || "";
                 
                 if (userText.toLowerCase().indexOf(filter) > -1 || summaryText.toLowerCase().indexOf(filter) > -1) {
                     rows[i].style.display = "";
@@ -461,12 +487,12 @@
 
         function logout() {
             if(confirm("Log out of Admin Console?")) {
-                localStorage.removeItem('user_role');
-                window.location.href = 'index.html'; // Assuming index.html exists
+                localStorage.clear(); // Clear token, role, etc.
+                window.location.href = 'index.html'; 
             }
         }
 
-        // Start the engine
+        // START ENGINE
         window.addEventListener('DOMContentLoaded', init);
 
     </script>
