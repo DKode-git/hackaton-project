@@ -32,6 +32,8 @@ class FeedbackSubmission(BaseModel):
     text: str
     category: str
     username: str
+    # Added this field so the frontend can send the admin status if needed
+    admin: Optional[str] = "false" 
     priority: Optional[str] = "normal"
 
 class FeedbackUpdate(BaseModel):
@@ -58,25 +60,30 @@ def save_json(filename, data):
 
 @app.post("/login")
 def login(creds: LoginRequest):
-    # Hackathon Logic: simple admin check
-    if creds.username == "admin" and creds.password == "password":
-        return {"token": "admin-token", "username": "admin", "role": "admin"}
+    # --- LOGIC FIX START ---
+    # List of users who should have Admin Access
+    ADMIN_USERS = ["admin", "Fardeen", "Boss"] 
+    
+    if creds.username in ADMIN_USERS and creds.password == "password":
+        return {
+            "token": "admin-token",
+            "username": creds.username,
+            "role": "admin",   # Critical for routing
+            "admin": "true"    # Critical for your specific check
+        }
+    # --- LOGIC FIX END ---
     
     return {
         "token": f"user-token-{uuid.uuid4()}",
         "username": creds.username,
-        "role": "user"
+        "role": "user",
+        "admin": "false"
     }
 
 # --- 5. CORE LOGIC ENDPOINTS ---
 
 @app.get("/suggestions")
 def get_suggestions(username: Optional[str] = None):
-    """
-    LOGIC FIX: 
-    - If ?username=bob is passed, return only Bob's items (User Dashboard).
-    - If NO username is passed, return ALL items (Admin Dashboard).
-    """
     data = load_json(FEEDBACK_FILE, [])
     
     if username:
@@ -96,12 +103,17 @@ def create_suggestion(item: FeedbackSubmission):
     summary_text = " ".join(item.text.split()[:7]) + "..."
     if len(item.text) < 30: summary_text = item.text
 
+    # LOGIC FIX: Determine if this post was made by an admin
+    # We check the payload or default to the username check
+    is_admin = "true" if item.username in ["admin", "Fardeen"] else "false"
+
     new_entry = {
         "id": str(uuid.uuid4().hex[:6]), 
         "status": "pending",
         "category": item.category,
         "text": item.text,
         "username": item.username,
+        "admin": is_admin,  # <-- SAVING THE ADMIN TAG IN JSON
         "ai_summary": summary_text, 
         "ai_note": f"Sentiment detected: {ai_sentiment}% positive.",
         "sentiment": ai_sentiment,
@@ -114,9 +126,6 @@ def create_suggestion(item: FeedbackSubmission):
 
 @app.patch("/suggestions/{item_id}")
 def update_suggestion(item_id: str, update: FeedbackUpdate):
-    """
-    LOGIC FIX: Finds item by ID and updates status (approved/rejected)
-    """
     data = load_json(FEEDBACK_FILE, [])
     found = False
     

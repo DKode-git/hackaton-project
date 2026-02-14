@@ -1,5 +1,39 @@
 [
     {
+        "id": "d840b9",
+        "status": "approved",
+        "category": "process",
+        "text": "neritfufydrkud",
+        "username": "Fardeen",
+        "admin" : "true",
+        "ai_summary": "neritfufydrkud",
+        "ai_note": "Sentiment detected: 73% positive.",
+        "sentiment": 73,
+        "date": "2026-02-14"
+    },
+    {
+        "id": "d75450",
+        "status": "approved",
+        "category": "process",
+        "text": "socks smell bad\n",
+        "username": "Khan",
+        "ai_summary": "socks smell bad\n",
+        "ai_note": "Sentiment detected: 71% positive.",
+        "sentiment": 71,
+        "date": "2026-02-14"
+    },
+    {
+        "id": "98c570",
+        "status": "rejected",
+        "category": "process",
+        "text": "socks smell bad\n",
+        "username": "Danish",
+        "ai_summary": "socks smell bad\n",
+        "ai_note": "Sentiment detected: 82% positive.",
+        "sentiment": 82,
+        "date": "2026-02-14"
+    },
+    {
         "id": "906e1a",
         "status": "approved",
         "category": "process",

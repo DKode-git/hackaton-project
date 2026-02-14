@@ -78,6 +78,12 @@
                 <span class="lg:hidden absolute left-14 bg-zinc-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50 whitespace-nowrap border border-zinc-700">Dashboard</span>
             </button>
 
+            <button id="admin-panel-btn" onclick="window.location.href='admin.html'" class="hidden w-full flex items-center justify-center lg:justify-start gap-3 px-0 lg:px-4 py-3 rounded-xl text-zinc-500 hover:text-white hover:bg-zinc-900 transition-all group relative">
+                <i class="fa-solid fa-shield-halved text-lg group-hover:text-neon-purple transition-colors"></i>
+                <span class="hidden lg:block font-medium text-sm">Admin Panel</span>
+                <span class="lg:hidden absolute left-14 bg-zinc-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50 whitespace-nowrap border border-zinc-700">Admin Panel</span>
+            </button>
+
             <a href="submit.html" class="w-full flex items-center justify-center lg:justify-start gap-3 px-0 lg:px-4 py-3 rounded-xl text-zinc-500 hover:text-white hover:bg-zinc-900 transition-all group relative">
                 <i class="fa-solid fa-plus text-lg group-hover:text-neon-purple transition-colors"></i>
                 <span class="hidden lg:block font-medium text-sm">New Request</span>
@@ -163,9 +169,17 @@
         // 1. Check Auth
         const username = localStorage.getItem('username');
         const token = localStorage.getItem('token');
+        const role = localStorage.getItem('role'); // Get role from local storage
         
         if (!token || !username) {
             window.location.href = 'index.html';
+        }
+
+        // --- NEW ADMIN LOGIC ---
+        // Checks if the 'admin' flag (from login response) is true or role is admin
+        if (role === 'admin' || role === 'true') {
+            const adminBtn = document.getElementById('admin-panel-btn');
+            if(adminBtn) adminBtn.classList.remove('hidden');
         }
 
         document.getElementById('welcome-msg').innerText = `Hello, ${username}`;
