@@ -1,7 +1,31 @@
 [
     {
+        "id": "b15576",
+        "status": "rejected",
+        "category": "process",
+        "text": "Refined: socks smell bad (Optimized for clarity and impact).",
+        "username": "Fardeen",
+        "admin": "true",
+        "ai_summary": "Refined: socks smell bad (Optimized for clarity...",
+        "ai_note": "Sentiment detected: 47% positive.",
+        "sentiment": 47,
+        "date": "2026-02-14"
+    },
+    {
+        "id": "8d5b63",
+        "status": "approved",
+        "category": "process",
+        "text": "Everybody mad ",
+        "username": "Fardeen",
+        "admin": "true",
+        "ai_summary": "Everybody mad ",
+        "ai_note": "Sentiment detected: 56% positive.",
+        "sentiment": 56,
+        "date": "2026-02-14"
+    },
+    {
         "id": "2b449f",
-        "status": "pending",
+        "status": "approved",
         "category": "process",
         "text": "i am mad",
         "username": "Fardeen",
