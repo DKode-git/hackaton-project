@@ -46,37 +46,56 @@
             to { opacity: 1; transform: translateY(0); }
         }
         .animate-entry { animation: slideUp 0.6s ease-out forwards; }
+        
+        /* Custom scrollbar for better aesthetics */
+        .no-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .no-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .no-scrollbar::-webkit-scrollbar-thumb {
+            background: #27272a;
+            border-radius: 3px;
+        }
     </style>
 </head>
-<body class="bg-zinc-950 text-zinc-300 font-sans h-screen flex overflow-hidden">
+<body class="bg-zinc-950 text-zinc-300 font-sans h-screen flex overflow-hidden selection:bg-neon-cyan selection:text-black">
 
-    <nav class="w-20 lg:w-64 border-r border-zinc-800 bg-zinc-900/50 backdrop-blur-xl flex flex-col justify-between py-6 z-20">
-        <div class="px-6 mb-8 flex items-center gap-3">
-            <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-neon-cyan to-neon-purple flex items-center justify-center text-black font-bold text-xl shadow-lg shadow-neon-cyan/20">
+    <nav class="w-16 md:w-20 lg:w-64 border-r border-zinc-800 bg-zinc-900/50 backdrop-blur-xl flex flex-col justify-between py-6 z-20 transition-all duration-300 shrink-0">
+        
+        <div class="px-2 md:px-6 mb-8 flex items-center justify-center lg:justify-start gap-3">
+            <div class="w-10 h-10 min-w-[2.5rem] rounded-lg bg-gradient-to-br from-neon-cyan to-neon-purple flex items-center justify-center text-black font-bold text-xl shadow-lg shadow-neon-cyan/20">
                 <i class="fa-solid fa-layer-group"></i>
             </div>
             <span class="hidden lg:block font-display font-bold text-white text-xl tracking-tight">Nexus</span>
         </div>
 
-        <div class="flex-1 px-4 space-y-2">
-            <button class="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-zinc-800/80 text-white border border-zinc-700 shadow-lg">
-                <i class="fa-solid fa-grid-2 text-neon-cyan"></i>
+        <div class="flex-1 px-2 md:px-4 space-y-2">
+            <button class="w-full flex items-center justify-center lg:justify-start gap-3 px-0 lg:px-4 py-3 rounded-xl bg-zinc-800/80 text-white border border-zinc-700 shadow-lg relative group">
+                <i class="fa-solid fa-grid-2 text-neon-cyan text-lg"></i>
                 <span class="hidden lg:block font-medium text-sm">Dashboard</span>
+                <span class="lg:hidden absolute left-14 bg-zinc-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50 whitespace-nowrap border border-zinc-700">Dashboard</span>
             </button>
-            <a href="submit.html" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-zinc-500 hover:text-white hover:bg-zinc-900 transition-all">
-                <i class="fa-solid fa-plus"></i>
+
+            <a href="submit.html" class="w-full flex items-center justify-center lg:justify-start gap-3 px-0 lg:px-4 py-3 rounded-xl text-zinc-500 hover:text-white hover:bg-zinc-900 transition-all group relative">
+                <i class="fa-solid fa-plus text-lg group-hover:text-neon-purple transition-colors"></i>
                 <span class="hidden lg:block font-medium text-sm">New Request</span>
+                <span class="lg:hidden absolute left-14 bg-zinc-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50 whitespace-nowrap border border-zinc-700">New Request</span>
             </a>
-            <a href="profile.html" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-zinc-500 hover:text-white hover:bg-zinc-900 transition-all">
-                <i class="fa-regular fa-user"></i>
+
+            <a href="profile.html" class="w-full flex items-center justify-center lg:justify-start gap-3 px-0 lg:px-4 py-3 rounded-xl text-zinc-500 hover:text-white hover:bg-zinc-900 transition-all group relative">
+                <i class="fa-regular fa-user text-lg"></i>
                 <span class="hidden lg:block font-medium text-sm">Profile</span>
+                 <span class="lg:hidden absolute left-14 bg-zinc-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50 whitespace-nowrap border border-zinc-700">Profile</span>
             </a>
         </div>
 
-        <div class="px-4">
-             <button onclick="logout()" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-zinc-500 hover:text-red-400 hover:bg-red-950/30 transition-all">
-                <i class="fa-solid fa-arrow-right-from-bracket"></i>
+        <div class="px-2 md:px-4">
+             <button onclick="logout()" class="w-full flex items-center justify-center lg:justify-start gap-3 px-0 lg:px-4 py-3 rounded-xl text-zinc-500 hover:text-red-400 hover:bg-red-950/30 transition-all border border-transparent hover:border-red-900/50 group relative">
+                <i class="fa-solid fa-arrow-right-from-bracket text-lg"></i>
                 <span class="hidden lg:block font-medium text-sm">Logout</span>
+                <span class="lg:hidden absolute left-14 bg-zinc-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50 whitespace-nowrap border border-zinc-700">Logout</span>
             </button>
         </div>
     </nav>
@@ -84,36 +103,37 @@
     <main class="flex-1 flex flex-col h-full overflow-hidden relative">
         <div class="absolute top-0 left-0 w-full h-96 bg-neon-purple/5 blur-[100px] pointer-events-none"></div>
 
-        <header class="h-20 border-b border-zinc-800 flex items-center justify-between px-8 bg-zinc-900/30 backdrop-blur-sm z-10">
+        <header class="h-16 md:h-20 border-b border-zinc-800 flex items-center justify-between px-4 md:px-8 bg-zinc-900/30 backdrop-blur-sm z-10 shrink-0">
             <div>
-                <h1 class="font-display font-bold text-white text-2xl" id="welcome-msg">My Dashboard</h1>
-                <p class="text-xs text-zinc-500 mt-1">Real-time status of your contributions.</p>
+                <h1 class="font-display font-bold text-white text-xl md:text-2xl truncate max-w-[200px] md:max-w-none" id="welcome-msg">My Dashboard</h1>
+                <p class="text-[10px] md:text-xs text-zinc-500 mt-0.5 md:mt-1">Real-time status of your contributions.</p>
             </div>
-            <a href="submit.html" class="bg-white text-black px-5 py-2.5 rounded-xl font-bold text-sm shadow-lg shadow-white/10 flex items-center gap-2 hover:bg-gray-200 transition-colors">
-                <i class="fa-solid fa-plus"></i> New Idea
+            <a href="submit.html" class="bg-white text-black px-3 md:px-5 py-2 md:py-2.5 rounded-xl font-bold text-xs md:text-sm shadow-lg shadow-white/10 flex items-center gap-2 hover:bg-gray-200 transition-colors whitespace-nowrap">
+                <i class="fa-solid fa-plus"></i> 
+                <span class="hidden sm:inline">New Idea</span>
             </a>
         </header>
 
-        <div class="flex-1 overflow-y-auto p-8 no-scrollbar">
+        <div class="flex-1 overflow-y-auto p-4 md:p-8 no-scrollbar">
             
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 animate-entry">
-                <div class="glass-panel p-5 rounded-2xl flex flex-col justify-between h-32">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mb-6 md:mb-8 animate-entry">
+                <div class="glass-panel p-5 rounded-2xl flex flex-col justify-between h-28 md:h-32">
                     <div class="text-zinc-500 text-xs font-bold uppercase tracking-wider">Total Requests</div>
-                    <div class="text-4xl font-display text-white" id="stat-total">0</div>
+                    <div class="text-3xl md:text-4xl font-display text-white" id="stat-total">--</div>
                     <div class="w-full bg-zinc-800 h-1 rounded-full overflow-hidden">
                         <div class="bg-white h-full" style="width: 10%"></div>
                     </div>
                 </div>
-                <div class="glass-panel p-5 rounded-2xl flex flex-col justify-between h-32">
+                <div class="glass-panel p-5 rounded-2xl flex flex-col justify-between h-28 md:h-32">
                     <div class="text-zinc-500 text-xs font-bold uppercase tracking-wider">Approved</div>
-                    <div class="text-4xl font-display text-emerald-400" id="stat-approved">0</div>
+                    <div class="text-3xl md:text-4xl font-display text-emerald-400" id="stat-approved">--</div>
                     <div class="w-full bg-zinc-800 h-1 rounded-full overflow-hidden">
                         <div class="bg-emerald-500 h-full" style="width: 0%" id="bar-approved"></div>
                     </div>
                 </div>
-                <div class="glass-panel p-5 rounded-2xl flex flex-col justify-between h-32">
+                <div class="glass-panel p-5 rounded-2xl flex flex-col justify-between h-28 md:h-32">
                     <div class="text-zinc-500 text-xs font-bold uppercase tracking-wider">Avg Sentiment</div>
-                    <div class="text-4xl font-display text-neon-cyan" id="stat-impact">0%</div>
+                    <div class="text-3xl md:text-4xl font-display text-neon-cyan" id="stat-impact">--%</div>
                     <div class="flex items-center gap-2 text-xs text-neon-cyan">
                         <i class="fa-solid fa-robot"></i>
                         <span>AI Analyzed</span>
@@ -121,7 +141,7 @@
                 </div>
             </div>
 
-            <div id="card-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 pb-20">
+            <div id="card-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 md:gap-6 pb-20">
                 </div>
 
             <div id="empty-state" class="hidden flex flex-col items-center justify-center h-64 animate-entry text-center">
